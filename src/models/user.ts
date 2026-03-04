@@ -19,7 +19,7 @@ export interface User extends Document {
 
 const MessageSchema: Schema<Message> = new Schema({
     content: { type: String, required: [true, "Content is required"] },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now() }
 });
 
 const UserSchema: Schema<User> = new Schema({

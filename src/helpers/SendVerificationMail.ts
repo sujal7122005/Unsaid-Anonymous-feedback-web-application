@@ -11,7 +11,7 @@ export const sendVerificationMail = async (
         const response = await resend.emails.send({
             from: "onboarding@resend.dev",
             to: email,
-            subject: "UnSeen Verification Code",
+            subject: "Verification Code",
             react: EmailVerification({ username, otp: verificationcode }),
         });
         toast.success("Verification email sent successfully", { duration: 2000 });
