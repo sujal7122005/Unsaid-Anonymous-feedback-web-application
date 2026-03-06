@@ -14,11 +14,12 @@ export const sendVerificationMail = async (
             subject: "Verification Code",
             react: EmailVerification({ username, otp: verificationcode }),
         });
-        toast.success("Verification email sent successfully", { duration: 2000 });
+        
         console.log("Verification email sent:", response);
         return response;
     } catch (error) {
-        toast.error("Failed to send verification email", { duration: 2000 });
+        console.log("Error sending verification email:", error);
+        
         console.error("Error sending verification email:", error);
         throw error;
     }

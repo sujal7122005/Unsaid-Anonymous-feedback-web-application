@@ -2,64 +2,78 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+export default function SignupPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-    async function handleGoogleLogin() {
-        const data = await authClient.signIn.social({
-            provider: "google",
-        });
-        toast.success("Redirecting to Google for authentication...", { duration: 2000 });
-        console.log("data", data);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const { error } = await authClient.signUp.email({
+      name: username,
+      email,
+      password,
+      callbackURL: "/verify-email"
+    });
+
+    if (error) {
+      toast.error("Signup failed. Please try again.", { duration: 3000 });
+      return;
     }
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        const { data, error } = await authClient.signIn.email({
-        email: email, // required
-        password: password, // required
-        rememberMe: true,
-        callbackURL: "/dashboard" // optional, defaults to "/"
-        });
+    // Send OTP email
+    const otpRes = await authClient.emailOtp.sendVerificationOtp({
+      email,
+      type: "email-verification",
+    });
 
-        if (error) {
-            toast.error(error.message || "An error occurred during sign in", { duration: 2000 });
-        }
-        if (data) {
-            toast.success("Signed in successfully!", { duration: 2000 });
-        }
-        console.log("data", data);
-        
-
+    if (otpRes.error) {
+      toast.error("Failed to send verification email.", { duration: 3000 });
+    } else {
+      toast.success("Verification code sent to your email!", { duration: 3000 });
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     }
+  }
+
+  async function handleGoogleSignup() {
+    await authClient.signIn.social({ provider: "google" });
+    toast.success("Redirecting to Google...", { duration: 2000 });
+  }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
       <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
-        {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-black tracking-tight">
-            Welcome Back
-          </h1>
+          <h1 className="text-3xl font-bold text-black tracking-tight">Create Account</h1>
           <p className="mt-2 text-sm text-gray-500">
-            Sign in to your Unsaid account
+            Join Unsaid and start receiving anonymous feedback
           </p>
         </div>
 
-        {/* Form Card */}
         <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div className="group">
-              <label
-                htmlFor="email"
-                className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider"
-              >
+            <div>
+              <label htmlFor="username" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="johndoe"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
                 Email
               </label>
               <input
@@ -72,12 +86,8 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password */}
-            <div className="group">
-              <label
-                htmlFor="password"
-                className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider"
-              >
+            <div>
+              <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
                 Password
               </label>
               <div className="relative">
@@ -86,7 +96,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Min 6 characters"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
                 />
                 <button
@@ -110,82 +120,46 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Login Button */}
             <button
               type="submit"
               className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
-              Sign In
+              Sign Up
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="px-4 text-xs text-gray-400 uppercase">or</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Google Sign In Button */}
           <button
             type="button"
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleSignup}
             className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.84z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                fill="#EA4335"
-              />
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.84z" fill="#FBBC05" />
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Sign in with Google
+            Sign up with Google
           </button>
         </div>
 
-        {/* Footer Link */}
-        <p className="text-center text-sm text-gray-500 mt-8 animate-[fadeIn_0.6s_ease-out]">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200"
-          >
-            Sign Up
+        <p className="text-center text-sm text-gray-500 mt-8">
+          Already have an account?{" "}
+          <Link href="/login" className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200">
+            Log in
           </Link>
         </p>
       </div>
 
-      {/* Keyframe Animations */}
       <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );
