@@ -13,27 +13,38 @@ export const auth = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL,
 
     user: {
-        modelName: "users", // mongoose "User" model → "users" collection
+        modelName: "users",
         fields: {
-            emailVerified: "isVerified", 
-            name: "username",            
+            emailVerified: "isVerified",
+            name: "username",
         },
         additionalFields: {
-        verificationcode: {
-            type: "string",
-            required: false,
-        },
-        verificationcodeExpiry: {
-            type: "date",
-            required: false,
-        },
-        isAcceptingMessages: {
-            type: "boolean",
-            required: false,
-            defaultValue: true,
+            isAcceptingMessages: {
+                type: "boolean",
+                required: false,
+                defaultValue: true,
+            },
+            //  removed messages from here
         },
     },
+
+    // runs after every user creation (email or Google)
+    databaseHooks: {
+        user: {
+            create: {
+                after: async (user) => {
+                    await db.collection("users").updateOne(
+                        { email: user.email },
+                        { $set: { 
+                            messages: [],              // ✅ proper empty array
+                            isAcceptingMessages: true,
+                        }}
+                    );
+                }
+            }
+        }
     },
+
     plugins: [
         emailOTP({
             async sendVerificationOTP({ email, otp, type }) {
@@ -46,24 +57,20 @@ export const auth = betterAuth({
         })
     ],
 
-    emailAndPassword: { 
-    enabled: true, 
-    password: {
-            hash: (password) => bcrypt.hash(password, 10),      
-            verify: ({ password, hash }) => bcrypt.compare(password, hash) 
+    emailAndPassword: {
+        enabled: true,
+        password: {
+            hash: (password) => bcrypt.hash(password, 10),
+            verify: ({ password, hash }) => bcrypt.compare(password, hash)
         }
     },
-    database: mongodbAdapter(db, {
-        // Optional: if you don't provide a client, database transactions won't be enabled.
-        client
-    }),
 
+    database: mongodbAdapter(db, { client }),
 
     socialProviders: {
-        google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID as string, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
-        }, 
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
     },
-
 });
