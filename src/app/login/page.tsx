@@ -43,10 +43,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-black tracking-tight">
+          <h1 className="text-4xl font-bold text-black tracking-tight">
             Welcome Back
           </h1>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-base text-gray-600 font-medium">
             Sign in to your Unsaid account
           </p>
         </div>
@@ -58,7 +58,7 @@ export default function LoginPage() {
             <div className="group">
               <label
                 htmlFor="email"
-                className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider"
+                className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider"
               >
                 Email
               </label>
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
             <div className="group">
               <label
                 htmlFor="password"
-                className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider"
+                className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider"
               >
                 Password
               </label>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
                 />
                 <button
                   type="button"
@@ -113,7 +113,7 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="w-full py-3 bg-black text-white text-base font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               Sign In
             </button>
@@ -122,7 +122,7 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="px-4 text-xs text-gray-400 uppercase">or</span>
+            <span className="px-4 text-sm text-gray-500 font-medium uppercase">or</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
@@ -130,7 +130,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path
@@ -155,7 +155,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer Link */}
-        <p className="text-center text-sm text-gray-500 mt-8 animate-[fadeIn_0.6s_ease-out]">
+        <p className="text-center text-base text-gray-600 font-medium mt-8 animate-[fadeIn_0.6s_ease-out]">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"

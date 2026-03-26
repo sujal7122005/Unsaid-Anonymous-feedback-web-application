@@ -50,8 +50,8 @@ export default function SignupPage() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
       <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-black tracking-tight">Create Account</h1>
-          <p className="mt-2 text-sm text-gray-500">
+          <h1 className="text-4xl font-bold text-black tracking-tight">Create Account</h1>
+          <p className="mt-2 text-base text-gray-600 font-medium">
             Join Unsaid and start receiving anonymous feedback
           </p>
         </div>
@@ -59,7 +59,7 @@ export default function SignupPage() {
         <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="username" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="username" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Username
               </label>
               <input
@@ -68,12 +68,12 @@ export default function SignupPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="johndoe"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Email
               </label>
               <input
@@ -82,12 +82,12 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Password
               </label>
               <div className="relative">
@@ -97,7 +97,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min 6 characters"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-sm placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
                 />
                 <button
                   type="button"
@@ -122,7 +122,7 @@ export default function SignupPage() {
 
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="w-full py-3 bg-black text-white text-base font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               Sign Up
             </button>
@@ -130,14 +130,14 @@ export default function SignupPage() {
 
           <div className="flex items-center my-6">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="px-4 text-xs text-gray-400 uppercase">or</span>
+            <span className="px-4 text-sm text-gray-500 font-medium uppercase">or</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignup}
-            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-sm font-medium text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -149,7 +149,7 @@ export default function SignupPage() {
           </button>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-base text-gray-600 font-medium mt-8">
           Already have an account?{" "}
           <Link href="/login" className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200">
             Log in
