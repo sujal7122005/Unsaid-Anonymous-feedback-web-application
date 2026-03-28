@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 // ----- In-memory cache to avoid hitting the API on every request -----
 let cachedSuggestions: string[] | null = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
 // ----- Quota cooldown: skip API calls after a 429 error -----
 let quotaExhaustedAt = 0;
@@ -88,7 +88,7 @@ export async function POST() {
     }
 
     // 3) Call Gemini API (gemini-2.0-flash-lite has higher free-tier limits)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt =
       "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: 'What's a hobby you've recently started?||If you could have dinner with any historical figure, who would it be?||What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
