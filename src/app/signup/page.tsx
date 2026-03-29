@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
+import { signupSchema } from "@/src/velidationSchemas/signupSchemaVelidation";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -13,31 +14,179 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Username uniqueness states
+  const [usernameMessage, setUsernameMessage] = useState("");
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [isUsernameUnique, setIsUsernameUnique] = useState<boolean | null>(null);
+
+  // Form validation errors (from Zod)
+  const [errors, setErrors] = useState<{
+    username?: string;
+    email?: string;
+    password?: string;
+  }>({});
+
+  // Form submission loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Debounced username uniqueness check
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (username.length < 3) {
+        setUsernameMessage("");
+        setIsUsernameUnique(null);
+        setIsCheckingUsername(false);
+        return;
+      }
+
+      // First validate username format with Zod before calling API
+      const usernameValidation = signupSchema.shape.username.safeParse(username);
+      if (!usernameValidation.success) {
+        setUsernameMessage(usernameValidation.error.issues[0].message);
+        setIsUsernameUnique(false);
+        setIsCheckingUsername(false);
+        return;
+      }
+
+      setIsCheckingUsername(true);
+      setUsernameMessage("");
+
+      try {
+        const res = await fetch(`/api/CheckUniqueUsername?username=${encodeURIComponent(username)}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setUsernameMessage(data.message);
+          setIsUsernameUnique(data.isUnique);
+        } else {
+          setUsernameMessage(data.error || "Error checking username");
+          setIsUsernameUnique(false);
+        }
+      } catch {
+        setUsernameMessage("Failed to check username");
+        setIsUsernameUnique(false);
+      } finally {
+        setIsCheckingUsername(false);
+      }
+    };
+
+    // Debounce: wait 500ms after user stops typing
+    const debounceTimer = setTimeout(checkUsername, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [username]);
+
+  // Validate individual fields on change
+  const validateField = useCallback(
+    (field: "username" | "email" | "password", value: string) => {
+      const fieldSchema = signupSchema.shape[field];
+      const result = fieldSchema.safeParse(value);
+
+      if (result.success) {
+        setErrors((prev) => ({ ...prev, [field]: undefined }));
+      } else {
+        const message = result.error?.issues?.[0]?.message ?? "Invalid input";
+        setErrors((prev) => ({ ...prev, [field]: message }));
+      }
+    },
+    []
+  );
+
+  function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setUsername(value);
+    if (value.length > 0) {
+      validateField("username", value);
+    } else {
+      setErrors((prev) => ({ ...prev, username: undefined }));
+      setUsernameMessage("");
+      setIsUsernameUnique(null);
+    }
+  }
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setEmail(value);
+    if (value.length > 0) {
+      validateField("email", value);
+    } else {
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+  }
+
+  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    setPassword(value);
+    if (value.length > 0) {
+      validateField("password", value);
+    } else {
+      setErrors((prev) => ({ ...prev, password: undefined }));
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const { error } = await authClient.signUp.email({
-      name: username,
-      email,
-      password,
-      callbackURL: "/verify-email"
-    });
 
-    if (error) {
-      toast.error("Signup failed. Please try again.", { duration: 3000 });
+    // Full form validation with Zod
+    const result = signupSchema.safeParse({ username, email, password });
+
+    if (!result.success) {
+      const fieldErrors: typeof errors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof typeof errors;
+        if (!fieldErrors[field]) {
+          fieldErrors[field] = issue.message;
+        }
+      });
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.", { duration: 3000 });
       return;
     }
 
-    // Send OTP email
-    const otpRes = await authClient.emailOtp.sendVerificationOtp({
-      email,
-      type: "email-verification",
-    });
+    // Check if username is unique before submitting
+    if (!isUsernameUnique) {
+      toast.error("Please choose a unique username.", { duration: 3000 });
+      return;
+    }
 
-    if (otpRes.error) {
-      toast.error("Failed to send verification email.", { duration: 3000 });
-    } else {
-      toast.success("Verification code sent to your email!", { duration: 3000 });
-      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    setIsSubmitting(true);
+    setErrors({});
+
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name: username,
+        email,
+        password,
+        callbackURL: "/verify-email",
+      });
+
+      console.log("Signup response:", { data, error });
+
+      if (error) {
+        const errorMessage = error.message || "Signup failed. Please try again.";
+        console.error("Signup error:", error);
+        toast.error(errorMessage, { duration: 4000 });
+        return;
+      }
+
+      // Send OTP email
+      const otpRes = await authClient.emailOtp.sendVerificationOtp({
+        email,
+        type: "email-verification",
+      });
+
+      if (otpRes.error) {
+        toast.error("Failed to send verification email.", { duration: 3000 });
+      } else {
+        toast.success("Verification code sent to your email!", {
+          duration: 3000,
+        });
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+      }
+    } catch {
+      toast.error("An unexpected error occurred.", { duration: 3000 });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -58,20 +207,66 @@ export default function SignupPage() {
 
         <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Username Field */}
             <div>
               <label htmlFor="username" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Username
               </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="johndoe"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
-              />
+              <div className="relative">
+                <input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={handleUsernameChange}
+                  placeholder="Username"
+                  className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 pr-10 ${errors.username
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                    : isUsernameUnique === true
+                      ? "border-green-400 focus:border-green-500 focus:ring-green-500"
+                      : "border-gray-300 focus:border-black focus:ring-black"
+                    }`}
+                />
+                {/* Loading spinner or status icon */}
+                {isCheckingUsername && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  </div>
+                )}
+                {!isCheckingUsername && isUsernameUnique === true && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <svg className="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+                {!isCheckingUsername && isUsernameUnique === false && username.length >= 3 && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              {/* Validation error message */}
+              {errors.username && (
+                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.username}</p>
+              )}
+              {/* Username uniqueness message */}
+              {!errors.username && usernameMessage && (
+                <p className={`mt-1.5 text-sm font-medium ${isUsernameUnique ? "text-green-600" : "text-red-500"}`}>
+                  {usernameMessage}
+                </p>
+              )}
+              {/* Checking indicator text */}
+              {isCheckingUsername && (
+                <p className="mt-1.5 text-sm text-gray-400 font-medium">Checking availability...</p>
+              )}
             </div>
 
+            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Email
@@ -80,12 +275,19 @@ export default function SignupPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 ${errors.email
+                  ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:border-black focus:ring-black"
+                  }`}
               />
+              {errors.email && (
+                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.email}</p>
+              )}
             </div>
 
+            {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider">
                 Password
@@ -95,9 +297,12 @@ export default function SignupPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   placeholder="Min 6 characters"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
+                  className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 pr-12 ${errors.password
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:border-black focus:ring-black"
+                    }`}
                 />
                 <button
                   type="button"
@@ -118,13 +323,31 @@ export default function SignupPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.password}</p>
+              )}
             </div>
 
+            {/* Submit Button with Loading State */}
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-base font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              disabled={isSubmitting || isCheckingUsername}
+              className={`w-full py-3 text-white text-base font-medium rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isSubmitting || isCheckingUsername
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-black hover:bg-gray-900 active:scale-[0.98]"
+                }`}
             >
-              Sign Up
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Creating Account...
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
 
@@ -137,7 +360,8 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleGoogleSignup}
-            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            disabled={isSubmitting}
+            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
