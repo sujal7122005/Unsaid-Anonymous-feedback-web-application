@@ -4,11 +4,24 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
+import { loginSchema } from "@/src/velidationSchemas/loginSchemaVelidation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const validateField = (field: "email" | "password", value: string) => {
+    const fieldSchema = loginSchema.shape[field];
+    const result = fieldSchema.safeParse(value);
+    if (result.success) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    } else {
+      const message = result.error?.issues?.[0]?.message ?? "Invalid input";
+      setErrors((prev) => ({ ...prev, [field]: message }));
+    }
+  };
 
     async function handleGoogleLogin() {
         const data = await authClient.signIn.social({
@@ -18,25 +31,38 @@ export default function LoginPage() {
         console.log("data", data);
     }
 
-    async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        const { data, error } = await authClient.signIn.email({
-        email: email, // required
-        password: password, // required
-        rememberMe: true,
-        callbackURL: "/dashboard" // optional, defaults to "/"
-        });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-        if (error) {
-            toast.error(error.message || "An error occurred during sign in", { duration: 2000 });
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      const nextErrors: typeof errors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof typeof errors;
+        if (!nextErrors[field]) {
+          nextErrors[field] = issue.message;
         }
-        if (data) {
-            toast.success("Signed in successfully!", { duration: 2000 });
-        }
-        console.log("data", data);
-        
-
+      });
+      setErrors(nextErrors);
+      toast.error("Please fix the errors in the form.", { duration: 2000 });
+      return;
     }
+
+    const { data, error } = await authClient.signIn.email({
+      email,
+      password,
+      rememberMe: true,
+      callbackURL: "/dashboard",
+    });
+
+    if (error) {
+      toast.error(error.message || "An error occurred during sign in", { duration: 2000 });
+    }
+    if (data) {
+      toast.success("Signed in successfully!", { duration: 2000 });
+    }
+    console.log("data", data);
+  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
@@ -72,10 +98,21 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setEmail(value);
+                  if (value.length === 0) {
+                    setErrors((prev) => ({ ...prev, email: undefined }));
+                  } else {
+                    validateField("email", value);
+                  }
+                }}
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black"
               />
+              {errors.email && (
+                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -91,7 +128,15 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPassword(value);
+                    if (value.length === 0) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    } else {
+                      validateField("password", value);
+                    }
+                  }}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black pr-12"
                 />
@@ -114,6 +159,9 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.password}</p>
+              )}
             </div>
 
             {/* Login Button */}
