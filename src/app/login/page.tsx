@@ -39,20 +39,26 @@ export default function LoginPage() {
     }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
-      <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
+    <div className="relative min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-black/5 blur-3xl animate-[fadeSoft_7s_ease-in-out_infinite]" />
+        <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-black/8 blur-3xl animate-[fadeSoft_9s_ease-in-out_infinite]" />
+      </div>
+
+      <div className="relative w-full max-w-md animate-[fadeIn_0.5s_ease-out] drop-shadow-[0_30px_80px_-50px_rgba(0,0,0,0.55)]">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-black tracking-tight">
+        <div className="text-center mb-10 space-y-2">
+          <h1 className="text-4xl font-black text-black tracking-tight">
             Welcome Back
           </h1>
-          <p className="mt-2 text-base text-gray-600 font-medium">
+          <p className="text-base text-gray-600 font-medium">
             Sign in to your Unsaid account
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
+        <div className="relative border border-gray-200 rounded-3xl p-8 shadow-xl bg-white/90 backdrop-blur-sm animate-[slideUp_0.4s_ease-out]">
+          <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/60" />
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="group">
@@ -68,7 +74,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black"
               />
             </div>
 
@@ -87,12 +93,12 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors duration-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors duration-200"
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -113,7 +119,7 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-base font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              className="w-full py-3 bg-black text-white text-base font-semibold rounded-xl hover:-translate-y-[1px] hover:shadow-[0_12px_30px_-18px_rgba(0,0,0,0.85)] transition-all duration-200 cursor-pointer"
             >
               Sign In
             </button>
@@ -121,16 +127,16 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="px-4 text-sm text-gray-500 font-medium uppercase">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+            <span className="px-4 text-xs text-gray-500 font-semibold uppercase tracking-[0.3em]">or</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
           </div>
 
           {/* Google Sign In Button */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="w-full py-3 border border-gray-200 rounded-xl flex items-center justify-center gap-3 text-base font-semibold text-black bg-white transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[0_10px_28px_-20px_rgba(0,0,0,0.65)] cursor-pointer"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path
@@ -159,7 +165,7 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200"
+            className="text-black font-semibold hover:underline underline-offset-4 transition-all duration-200"
           >
             Sign Up
           </Link>
@@ -169,23 +175,14 @@ export default function LoginPage() {
       {/* Keyframe Animations */}
       <style jsx global>{`
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeSoft { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.05); } }
       `}</style>
     </div>
   );

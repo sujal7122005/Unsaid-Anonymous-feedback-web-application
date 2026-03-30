@@ -196,16 +196,25 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
-      <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-black tracking-tight">Create Account</h1>
-          <p className="mt-2 text-base text-gray-600 font-medium">
-            Join Unsaid and start receiving anonymous feedback
+    <div className="relative min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-black/5 blur-3xl animate-[fadeSoft_7s_ease-in-out_infinite]" />
+        <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-black/8 blur-3xl animate-[fadeSoft_9s_ease-in-out_infinite]" />
+      </div>
+
+      <div className="relative w-full max-w-md animate-[fadeIn_0.5s_ease-out] drop-shadow-[0_30px_80px_-50px_rgba(0,0,0,0.55)]">
+        <div className="text-center mb-10 space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-gray-600 shadow-sm">
+            Wellcome to Unsaid
+          </div>
+          <h1 className="text-4xl font-black text-black tracking-tight">Create Account</h1>
+          <p className="text-base text-gray-600 font-medium">
+            Join <b>Unsaid</b> and start receiving anonymous feedback
           </p>
         </div>
 
-        <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
+        <div className="relative border border-gray-200 rounded-3xl p-8 shadow-xl bg-white/90 backdrop-blur-sm animate-[slideUp_0.4s_ease-out]">
+          <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/60" />
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Username Field */}
             <div>
@@ -219,17 +228,17 @@ export default function SignupPage() {
                   value={username}
                   onChange={handleUsernameChange}
                   placeholder="Username"
-                  className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 pr-10 ${errors.username
+                  className={`w-full px-4 py-3 border rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 pr-12 ${errors.username
                     ? "border-red-400 focus:border-red-500 focus:ring-red-500"
                     : isUsernameUnique === true
                       ? "border-green-400 focus:border-green-500 focus:ring-green-500"
-                      : "border-gray-300 focus:border-black focus:ring-black"
+                      : "border-gray-300 focus:border-black focus:ring-gray-900/30"
                     }`}
                 />
                 {/* Loading spinner or status icon */}
                 {isCheckingUsername && (
                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
@@ -277,9 +286,9 @@ export default function SignupPage() {
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="you@example.com"
-                className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 ${errors.email
+                className={`w-full px-4 py-3 border rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 ${errors.email
                   ? "border-red-400 focus:border-red-500 focus:ring-red-500"
-                  : "border-gray-300 focus:border-black focus:ring-black"
+                  : "border-gray-300 focus:border-black focus:ring-gray-900/30"
                   }`}
               />
               {errors.email && (
@@ -299,15 +308,15 @@ export default function SignupPage() {
                   value={password}
                   onChange={handlePasswordChange}
                   placeholder="Min 6 characters"
-                  className={`w-full px-4 py-3 border rounded-lg text-black text-lg font-medium placeholder-gray-400 outline-none transition-all duration-200 focus:ring-1 pr-12 ${errors.password
+                  className={`w-full px-4 py-3 border rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 pr-12 ${errors.password
                     ? "border-red-400 focus:border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:border-black focus:ring-black"
+                    : "border-gray-300 focus:border-black focus:ring-gray-900/30"
                     }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors duration-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors duration-200"
                 >
                   {showPassword ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -332,9 +341,9 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isSubmitting || isCheckingUsername}
-              className={`w-full py-3 text-white text-base font-medium rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isSubmitting || isCheckingUsername
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-black hover:bg-gray-900 active:scale-[0.98]"
+              className={`w-full py-3 text-white text-base font-semibold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isSubmitting || isCheckingUsername
+                ? "bg-gray-700 cursor-not-allowed"
+                : "bg-black hover:-translate-y-[1px] hover:shadow-[0_12px_30px_-18px_rgba(0,0,0,0.85)]"
                 }`}
             >
               {isSubmitting ? (
@@ -352,16 +361,16 @@ export default function SignupPage() {
           </form>
 
           <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="px-4 text-sm text-gray-500 font-medium uppercase">or</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+            <span className="px-4 text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">or</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignup}
             disabled={isSubmitting}
-            className="w-full py-3 border border-gray-300 rounded-lg flex items-center justify-center gap-3 text-base font-semibold text-black hover:bg-gray-50 active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 border border-gray-200 rounded-xl flex items-center justify-center gap-3 text-base font-semibold text-black bg-white transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[0_10px_28px_-20px_rgba(0,0,0,0.65)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -375,7 +384,7 @@ export default function SignupPage() {
 
         <p className="text-center text-base text-gray-600 font-medium mt-8">
           Already have an account?{" "}
-          <Link href="/login" className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200">
+          <Link href="/login" className="text-black font-semibold hover:underline underline-offset-4 transition-all duration-200">
             Log in
           </Link>
         </p>
@@ -384,6 +393,7 @@ export default function SignupPage() {
       <style jsx global>{`
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSoft { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.05); } }
       `}</style>
     </div>
   );
