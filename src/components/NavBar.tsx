@@ -1,11 +1,10 @@
 'use client'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { authClient } from '../lib/auth-client'
 import toast from 'react-hot-toast'
 
 function NavBar() {
-    const router = useRouter()
     const pathname = usePathname()
     const { data: session, isPending } = authClient.useSession()
 
@@ -27,9 +26,8 @@ function NavBar() {
                 return
             }
 
-            toast.success('Signed out successfully', { duration: 2000 })
-            router.push('/login')
-            router.refresh()
+            toast.success('Signed out successfully', { duration: 3000 })
+            window.location.assign('/login')
         } catch {
             toast.error('Failed to sign out', { duration: 2000 })
         }
