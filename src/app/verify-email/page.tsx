@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
+import { verifySchema } from "@/src/velidationSchemas/verifySchema";
 import toast from "react-hot-toast";
 
 export default function VerifyEmailPage() {
@@ -11,6 +12,7 @@ export default function VerifyEmailPage() {
   const email = searchParams.get("email") || "";
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
+  const [errorText, setErrorText] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   function handleChange(index: number, value: string) {
@@ -18,6 +20,7 @@ export default function VerifyEmailPage() {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+    if (errorText) setErrorText("");
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -45,8 +48,11 @@ export default function VerifyEmailPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const code = otp.join("");
-    if (code.length !== 6) {
-      toast.error("Please enter the full 6-digit code.", { duration: 2000 });
+    const validation = verifySchema.safeParse({ verificationcode: code });
+    if (!validation.success) {
+      const message = validation.error.issues[0]?.message || "Invalid code.";
+      setErrorText(message);
+      toast.error(message, { duration: 2000 });
       return;
     }
     setLoading(true);
@@ -112,6 +118,10 @@ export default function VerifyEmailPage() {
                 />
               ))}
             </div>
+
+            {errorText && (
+              <p className="text-center text-sm text-red-500">{errorText}</p>
+            )}
 
             {/* Verify Button */}
             <button

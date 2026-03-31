@@ -196,7 +196,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
+    <div className="relative min-h-screen bg-linear-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 opacity-70">
         <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-black/5 blur-3xl animate-[fadeSoft_7s_ease-in-out_infinite]" />
         <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-black/8 blur-3xl animate-[fadeSoft_9s_ease-in-out_infinite]" />
@@ -343,7 +343,7 @@ export default function SignupPage() {
               disabled={isSubmitting || isCheckingUsername}
               className={`w-full py-3 text-white text-base font-semibold rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 ${isSubmitting || isCheckingUsername
                 ? "bg-gray-700 cursor-not-allowed"
-                : "bg-black hover:-translate-y-[1px] hover:shadow-[0_12px_30px_-18px_rgba(0,0,0,0.85)]"
+                : "bg-black hover:-translate-y-px hover:shadow-[0_12px_30px_-18px_rgba(0,0,0,0.85)]"
                 }`}
             >
               {isSubmitting ? (
@@ -361,16 +361,16 @@ export default function SignupPage() {
           </form>
 
           <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent" />
             <span className="px-4 text-xs uppercase tracking-[0.3em] text-gray-500 font-semibold">or</span>
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignup}
             disabled={isSubmitting}
-            className="w-full py-3 border border-gray-200 rounded-xl flex items-center justify-center gap-3 text-base font-semibold text-black bg-white transition-all duration-200 hover:-translate-y-[1px] hover:shadow-[0_10px_28px_-20px_rgba(0,0,0,0.65)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3 border border-gray-200 rounded-xl flex items-center justify-center gap-3 text-base font-semibold text-black bg-white transition-all duration-200 hover:-translate-y-px hover:shadow-[0_10px_28px_-20px_rgba(0,0,0,0.65)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
