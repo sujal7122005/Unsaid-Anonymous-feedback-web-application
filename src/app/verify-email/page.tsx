@@ -91,7 +91,7 @@ export default function VerifyEmailPage() {
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-black tracking-tight">
-            Verify Email
+            Verify Email For Your UnSaid Account
           </h1>
           <p className="mt-2 text-sm text-gray-500">
             Enter the 6-digit code sent to your email
