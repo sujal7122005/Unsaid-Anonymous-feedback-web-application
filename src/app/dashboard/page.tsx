@@ -161,7 +161,7 @@ function DashboardPage() {
                 Creator Workspace
               </div>
               <h1 className="text-3xl leading-tight font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                User Dashboard
+                {session?.user?.name || 'User'}'s Dashboard
               </h1>
               <p className="max-w-2xl text-sm text-slate-600 sm:text-base">
                 Share your public link, control message privacy, and monitor your
