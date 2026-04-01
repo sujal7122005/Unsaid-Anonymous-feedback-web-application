@@ -24,9 +24,8 @@ import { Trash2 } from 'lucide-react'
 
 type MessageCardData = {
   _id?: string
-  title?: string
   content: string
-  createdAt?: string | Date
+  createdAt: string | Date
 }
 
 type MessageCardProps = {
@@ -34,11 +33,7 @@ type MessageCardProps = {
   onMessageDelete?: (messageId?: string) => void | Promise<void>
 }
 
-function formatMessageDate(createdAt?: string | Date) {
-  if (!createdAt) {
-    return 'Just now'
-  }
-
+function formatMessageDate(createdAt: string | Date) {
   const date = new Date(createdAt)
   if (Number.isNaN(date.getTime())) {
     return 'Just now'
@@ -65,10 +60,10 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <CardDescription className="text-xs font-bold uppercase tracking-[0.26em] text-gray-500">
-            
+              Anonymous Message
             </CardDescription>
             <CardTitle className="text-lg font-black tracking-tight text-black sm:text-2xl">
-              {message.title || 'Anonymous Message'}
+              Message
             </CardTitle>
           </div>
 
