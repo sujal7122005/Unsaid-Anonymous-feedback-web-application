@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { useSearchParams, useRouter, redirect } from "next/navigation";
+import React, { Suspense, useState, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import { verifySchema } from "@/src/velidationSchemas/verifySchema";
 import toast from "react-hot-toast";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -16,12 +16,12 @@ export default function VerifyEmailPage() {
   const [errorText, setErrorText] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const { data: session, isPending } = authClient.useSession()
-      useEffect(() => {
-       if (session && !isPending) {
-        redirect("/")
-       }
-      }, [session, isPending])
+  // const { data: session, isPending } = authClient.useSession()
+  //     useEffect(() => {
+  //      if (session && !isPending) {
+  //       redirect("/")
+  //      }
+  //     }, [session, isPending])
 
   function handleChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;
@@ -72,8 +72,13 @@ export default function VerifyEmailPage() {
     if (error) {
       toast.error(error.message || "Invalid OTP. Please try again.", { duration: 3000 });
     } else {
-      toast.success("Email verified successfully!", { duration: 3000 });
-      router.push("/login");
+      const signOutResult = await authClient.signOut();
+      if (signOutResult?.error) {
+        toast.error(signOutResult.error.message || "Verified, but failed to clear session.", { duration: 3000 });
+        return;
+      }
+      toast.success("Email verified successfully! Please login.", { duration: 3000 });
+      window.location.assign("/login");
     }
   }
 
@@ -167,5 +172,19 @@ export default function VerifyEmailPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
+          <p className="text-sm text-gray-500">Loading...</p>
+        </div>
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
