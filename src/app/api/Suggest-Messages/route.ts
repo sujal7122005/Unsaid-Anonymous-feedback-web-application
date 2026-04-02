@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 // ----- In-memory cache to avoid hitting the API on every request -----
 let cachedSuggestions: string[] | null = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION_MS = 1 * 60 * 1000; // 1 minute
 
 // ----- Quota cooldown: skip API calls after a 429 error -----
 let quotaExhaustedAt = 0;

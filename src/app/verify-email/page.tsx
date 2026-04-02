@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import React, { useState, useRef, useEffect } from "react";
+import { useSearchParams, useRouter, redirect } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import { verifySchema } from "@/src/velidationSchemas/verifySchema";
 import toast from "react-hot-toast";
 
 export default function VerifyEmailPage() {
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const email = searchParams.get("email") || "";
@@ -14,6 +15,13 @@ export default function VerifyEmailPage() {
   const [loading, setLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const { data: session, isPending } = authClient.useSession()
+      useEffect(() => {
+       if (session && !isPending) {
+        redirect("/")
+       }
+      }, [session, isPending])
 
   function handleChange(index: number, value: string) {
     if (!/^\d?$/.test(value)) return;

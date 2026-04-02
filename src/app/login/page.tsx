@@ -1,16 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
 import { loginSchema } from "@/src/velidationSchemas/loginSchemaVelidation";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const { data: session, isPending } = authClient.useSession()
+  useEffect(() => {
+   if (session && !isPending) {
+    redirect("/dashboard")
+   }
+  }, [session, isPending])
+  
 
   const validateField = (field: "email" | "password", value: string) => {
     const fieldSchema = loginSchema.shape[field];

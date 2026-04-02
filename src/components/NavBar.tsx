@@ -25,7 +25,8 @@ function NavBar() {
   const shouldHideNavBar =
     pathname === '/signup' ||
     pathname === '/login' ||
-    pathname.startsWith('/verify-email')
+    pathname.startsWith('/verify-email') ||
+    pathname.startsWith('/u/')
 
   if (shouldHideNavBar) {
     return null
@@ -41,7 +42,7 @@ function NavBar() {
       }
 
       toast.success('Signed out successfully', { duration: 3000 })
-      window.location.assign('/login')
+      window.location.assign('/')
     } catch {
       toast.error('Failed to sign out', { duration: 2000 })
     }

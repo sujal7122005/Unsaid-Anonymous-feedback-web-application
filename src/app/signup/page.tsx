@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import toast from "react-hot-toast";
 import { signupSchema } from "@/src/velidationSchemas/signupSchemaVelidation";
@@ -13,6 +13,13 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const { data: session, isPending } = authClient.useSession()
+    useEffect(() => {
+     if (session && !isPending) {
+      redirect("/dashboard")
+     }
+    }, [session, isPending])
 
   // Username uniqueness states
   const [usernameMessage, setUsernameMessage] = useState("");

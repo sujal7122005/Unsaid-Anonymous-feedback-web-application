@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useState } from 'react'
 
 import {
   AlertDialog,
@@ -20,7 +21,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
+import { Loader2, Trash2 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 type MessageCardData = {
   _id?: string
@@ -31,6 +33,11 @@ type MessageCardData = {
 type MessageCardProps = {
   message: MessageCardData
   onMessageDelete?: (messageId?: string) => void | Promise<void>
+}
+
+type DeleteMessageResponse = {
+  success: boolean
+  message: string
 }
 
 function formatMessageDate(createdAt: string | Date) {
@@ -49,9 +56,40 @@ function formatMessageDate(createdAt: string | Date) {
 }
 
 export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+
   async function handleDeleteConfirm() {
-    // TODO: Write delete logic here (API call, state update, etc.).
-    await onMessageDelete?.(message?._id)
+    if (!message?._id) {
+      toast.error('Message id is missing')
+      return
+    }
+
+    setIsDeleting(true)
+
+    try {
+      const response = await fetch('/api/Delete-Message', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ messageId: message._id }),
+      })
+
+      const data: DeleteMessageResponse = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to delete message')
+      }
+
+      await onMessageDelete?.(message._id)
+      toast.success(data.message || 'Message deleted successfully')
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to delete message'
+      toast.error(errorMessage)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -73,10 +111,15 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
                 type="button"
                 variant="destructive"
                 size="sm"
+                disabled={isDeleting}
                 className="h-10 rounded-xl px-3.5 text-sm font-semibold tracking-wide shadow-sm transition-all duration-200 hover:-translate-y-px hover:shadow-md"
               >
-                <Trash2 className="h-4 w-4" />
-                Delete
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+                {isDeleting ? 'Deleting...' : 'Delete'}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -89,7 +132,7 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteConfirm}>
+                <AlertDialogAction onClick={handleDeleteConfirm} disabled={isDeleting}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>
