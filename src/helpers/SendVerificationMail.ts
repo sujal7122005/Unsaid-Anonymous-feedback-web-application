@@ -1,6 +1,6 @@
-import { resend } from "@/src/lib/emailsend";
+import { render } from "@react-email/render";
+import { mailFrom, mailTransporter } from "@/src/lib/emailsend";
 import EmailVerification from "@/EmailTemplets/EmailVerification";
-import toast from 'react-hot-toast';
 
 export const sendVerificationMail = async (
     email: string,
@@ -8,11 +8,16 @@ export const sendVerificationMail = async (
     verificationcode: string
 ) => {
     try {
-        const response = await resend.emails.send({
-            from: "onboarding@resend.dev",
+        const html = await render(
+            EmailVerification({ username, otp: verificationcode })
+        );
+
+        const response = await mailTransporter.sendMail({
+            from: mailFrom,
             to: email,
             subject: "Verification Code",
-            react: EmailVerification({ username, otp: verificationcode }),
+            html,
+            text: `Your verification code is: ${verificationcode}`,
         });
         
         console.log("Verification email sent:", response);
