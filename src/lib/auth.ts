@@ -8,9 +8,14 @@ import { sendVerificationMail } from "@/src/helpers/SendVerificationMail";
 const client = new MongoClient(process.env.MONGO_URI as string);
 const db = client.db();
 
+const authBaseURL =
+    process.env.BETTER_AUTH_URL ??
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
-    baseURL: process.env.BETTER_AUTH_URL,
+    baseURL: authBaseURL,
 
     user: {
         modelName: "users",
