@@ -41,27 +41,27 @@ The project uses Next.js App Router, Better Auth, MongoDB/Mongoose, Resend email
 
 ```mermaid
 flowchart LR
-		A[Public Sender at /u/[username]] -->|POST| B[/api/Send-Message]
-		A -->|POST| C[/api/Suggest-Messages]
+    A["Public Sender at /u/{username}"] -->|POST| B["/api/Send-Message"]
+    A -->|POST| C["/api/Suggest-Messages"]
 
-		D[Authenticated User Dashboard] -->|GET/POST| E[/api/Accepting-Messages]
-		D -->|GET| F[/api/Get-Messages]
-		D -->|DELETE| G[/api/Delete-Message]
+    D["Authenticated User Dashboard"] -->|GET/POST| E["/api/Accepting-Messages"]
+    D -->|GET| F["/api/Get-Messages"]
+    D -->|DELETE| G["/api/Delete-Message"]
 
-		H[Login / Signup / Verify] --> I[/api/auth/[...all]]
-		H --> J[/api/CheckUniqueUsername]
+    H["Login / Signup / Verify"] --> I["/api/auth/{...all}"]
+    H --> J["/api/CheckUniqueUsername"]
 
-		I --> K[Better Auth]
-		K --> L[(MongoDB)]
+    I --> K["Better Auth"]
+    K --> L[(MongoDB)]
 
-		B --> M[(Mongoose User Model)]
-		E --> M
-		F --> M
-		G --> M
-		J --> M
+    B --> M[(Mongoose User Model)]
+    E --> M
+    F --> M
+    G --> M
+    J --> M
 
-		C --> N[Google Gemini API]
-		I --> O[Resend Email API]
+    C --> N["Google Gemini API"]
+    I --> O["Resend Email API"]
 ```
 
 ## Tech Stack
