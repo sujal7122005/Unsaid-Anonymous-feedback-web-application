@@ -50,7 +50,8 @@ function DashboardPage() {
   }
 
   const BaseUrl = window.location.protocol + '//' + window.location.host
-  const profileUrl = `${BaseUrl}/u/${session.user.name}`
+  const encodedUsername = encodeURIComponent(session.user.name ?? '')
+  const profileUrl = `${BaseUrl}/u/${encodedUsername}`
   const totalMessages = messages.length
 
   const copyToClipboard = async () => {

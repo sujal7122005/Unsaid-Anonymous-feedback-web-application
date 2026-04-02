@@ -198,7 +198,7 @@ Mongo document model (Mongoose):
 
 Zod schemas enforce:
 
-1. Username: 3-20 chars, alphanumeric + underscore only.
+1. Username: 3-20 chars, letters, numbers, underscores, and single spaces between words.
 2. Password: min 6 chars.
 3. Email: valid email format.
 4. OTP code: exactly 6 chars.
