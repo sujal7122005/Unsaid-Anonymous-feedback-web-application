@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import ScrollVisualShowcase from "@/src/components/ScrollVisualShowcase";
+import MessageTimeCarousel from "../components/MessageTimeCarousel";
 
 type HomeFeature = {
   title: string;
@@ -82,7 +82,7 @@ const steps: HomeStep[] = [
   },
   {
     id: "03",
-    title: "Receive and improve",
+    title: "Receive and improve with feedback",
     description:
       "Read honest messages from your dashboard and use them to grow.",
   },
@@ -144,8 +144,10 @@ function StepCard({ step }: { step: HomeStep }) {
 }
 
 export default function Home() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 px-4 py-10 sm:px-6 lg:px-8">
+    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 py-10">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-10 top-20 h-48 w-48 rounded-full bg-cyan-200/35 blur-3xl motion-safe:animate-pulse"
@@ -155,8 +157,8 @@ export default function Home() {
         className="pointer-events-none absolute -right-8 top-36 h-44 w-44 rounded-full bg-amber-200/35 blur-3xl motion-safe:animate-pulse"
       />
 
-      <main className="relative mx-auto max-w-6xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+      <main className="relative w-full space-y-6">
+        <section id="home" className="animate-in fade-in-0 slide-in-from-top-3 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase">
             <Sparkles className="h-3.5 w-3.5 transition-transform duration-300 hover:rotate-12" />
             Unsaid
@@ -191,7 +193,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section id="features" className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <SectionHeader
             badge="Our Vision"
             title="Make honest feedback simple, safe, and useful"
@@ -210,11 +212,9 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
-          <ScrollVisualShowcase />
-        </div>
+        <MessageTimeCarousel />
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section id="how-it-works" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <SectionHeader
             badge="How It Works"
             title="From sign-up to meaningful insights"
@@ -228,6 +228,90 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <footer className="relative mt-10 w-full border-t border-slate-300 bg-slate-950 text-slate-200">
+        <div className="grid gap-10 px-6 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12">
+          <div className="space-y-4 sm:col-span-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-300 uppercase">
+              <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
+              Unsaid
+            </div>
+            <p className="max-w-xl text-sm leading-relaxed text-slate-300">
+              Collect honest anonymous feedback in a secure and structured way.
+              Unsaid helps individuals and teams turn candid input into clear
+              action.
+            </p>
+            <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
+              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
+                OTP Verification
+              </span>
+              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
+                Private Dashboard
+              </span>
+              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
+                AI Suggestions
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
+              Product
+            </h3>
+            <nav className="flex flex-col gap-2 text-sm">
+              <Link
+                href="#features"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Features
+              </Link>
+              <Link
+                href="#how-it-works"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                How it works
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Dashboard
+              </Link>
+            </nav>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
+              Account
+            </h3>
+            <nav className="flex flex-col gap-2 text-sm">
+              <Link
+                href="/signup"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Create account
+              </Link>
+              <Link
+                href="/login"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/verify-email"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Verify email
+              </Link>
+            </nav>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-slate-800 px-6 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:text-sm lg:px-12">
+          <p>&copy; {currentYear} Unsaid. All rights reserved.</p>
+          <p>Privacy-first anonymous feedback for creators, students, and teams.</p>
+        </div>
+      </footer>
     </div>
   );
 }
