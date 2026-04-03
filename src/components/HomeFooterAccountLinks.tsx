@@ -37,12 +37,7 @@ function HomeFooterAccountLinks() {
       >
         Sign in
       </Link>
-      <Link
-        href="/verify-email"
-        className="text-slate-200 transition-colors duration-200 hover:text-white"
-      >
-        Verify email
-      </Link>
+      
     </nav>
   )
 }
