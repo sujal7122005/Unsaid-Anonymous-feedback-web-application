@@ -158,8 +158,8 @@ function DashboardPage() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-300/80 bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-slate-600 uppercase">
-                <Sparkles className="h-3.5 w-3.5" />
-                Creator Workspace
+                
+                
               </div>
               <h1 className="text-3xl leading-tight font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                 {session?.user?.name || 'User'}'s Dashboard

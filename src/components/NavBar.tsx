@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { authClient } from '../lib/auth-client'
@@ -68,13 +69,14 @@ function NavBar() {
 
       <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="group inline-flex items-center gap-3 rounded-2xl px-1 py-1 transition-all duration-300 hover:bg-white/70">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-linear-to-br from-slate-900 to-slate-700 text-sm font-black tracking-widest text-white shadow-[0_10px_28px_-18px_rgba(0,0,0,0.85)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_14px_28px_-18px_rgba(0,0,0,0.95)]">
-            U
-          </span>
-          <div className="leading-tight">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-500">Unsaid</p>
-            <p className="text-sm font-bold text-slate-900">Anonymous Feedback</p>
-          </div>
+          <Image
+            src="/unsaid-logo.svg"
+            alt="Unsaid"
+            width={164}
+            height={54}
+            className="h-10 w-auto transition-all duration-300 group-hover:-translate-y-0.5"
+            priority
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white/90 p-1 shadow-sm md:flex">

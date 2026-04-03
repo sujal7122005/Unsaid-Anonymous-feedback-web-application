@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "UnSaid - Anonumous Messaging Platform",
+  icons: {
+    icon: [{ url: "/unsaid-logo.svg", type: "image/svg+xml" }],
+    shortcut: [{ url: "/unsaid-logo.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/unsaid-logo.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({
