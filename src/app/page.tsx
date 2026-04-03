@@ -1,5 +1,4 @@
 import {
-  ArrowRight,
   BadgeCheck,
   Link2,
   LockKeyhole,
@@ -11,6 +10,8 @@ import {
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import MessageTimeCarousel from "../components/MessageTimeCarousel";
+import HomeHeroActions from "../components/HomeHeroActions";
+import HomeFooterAccountLinks from "../components/HomeFooterAccountLinks";
 
 type HomeFeature = {
   title: string;
@@ -176,21 +177,7 @@ export default function Home() {
             messages that help you grow as a creator, student, or professional.
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/signup"
-              className="group inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-black hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-            >
-              Start for Free
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
-            >
-              Sign In
-            </Link>
-          </div>
+          <HomeHeroActions />
         </section>
 
         <section id="features" className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -284,26 +271,7 @@ export default function Home() {
             <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
               Account
             </h3>
-            <nav className="flex flex-col gap-2 text-sm">
-              <Link
-                href="/signup"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Create account
-              </Link>
-              <Link
-                href="/login"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/verify-email"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Verify email
-              </Link>
-            </nav>
+            <HomeFooterAccountLinks />
           </div>
         </div>
 
