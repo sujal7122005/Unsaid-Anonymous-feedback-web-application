@@ -69,14 +69,20 @@ function NavBar() {
 
       <div className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="group inline-flex items-center gap-3 rounded-2xl px-1 py-1 transition-all duration-300 hover:bg-white/70">
-          <Image
-            src="/unsaid-logo.svg"
-            alt="Unsaid"
-            width={164}
-            height={54}
-            className="h-10 w-auto transition-all duration-300 group-hover:-translate-y-0.5"
-            priority
-          />
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-300/80 bg-white/95 shadow-[0_12px_24px_-20px_rgba(15,23,42,0.75)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_16px_28px_-20px_rgba(15,23,42,0.85)]">
+            <Image
+              src="/unsaid-mark.svg"
+              alt="Unsaid logo"
+              width={28}
+              height={32}
+              className="h-7 w-auto"
+              priority
+            />
+          </span>
+          <div className="hidden leading-tight sm:block">
+            <p className="text-sm font-black tracking-[0.26em] text-slate-900">UNSAID</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.17em] text-slate-500">Anonymous Feedback</p>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white/90 p-1 shadow-sm md:flex">

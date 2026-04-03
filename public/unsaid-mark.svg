@@ -1,0 +1,26 @@
+<svg viewBox="180 104 400 468" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Unsaid mark</title>
+  <desc id="desc">Stylized U-shaped brand mark.</desc>
+  <defs>
+    <linearGradient id="uMain" x1="196" y1="124" x2="576" y2="584" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4B4E54"/>
+      <stop offset="0.5" stop-color="#2D3035"/>
+      <stop offset="1" stop-color="#8C9096"/>
+    </linearGradient>
+    <linearGradient id="uHighlight" x1="386" y1="146" x2="546" y2="524" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E8E9EB"/>
+      <stop offset="1" stop-color="#A6A9AE"/>
+    </linearGradient>
+    <linearGradient id="uShadow" x1="228" y1="178" x2="456" y2="590" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6A6D73" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#121316" stop-opacity="0.85"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+    <path d="M276 114L276 356C276 426.7 328.3 482 386 482C443.7 482 496 426.7 496 356L496 114L568 114L568 360C568 469.4 486.8 558 386 558C285.2 558 204 469.4 204 360L204 114L276 114Z" fill="url(#uMain)"/>
+    <path d="M458 154L458 349C458 397.9 425.8 438 386 438C346.2 438 314 397.9 314 349L314 154L358 154L358 343C358 368.2 371.3 388 386 388C400.7 388 414 368.2 414 343L414 154L458 154Z" fill="url(#uHighlight)"/>
+    <path d="M276 267C302.7 266.8 329.3 279.6 348.9 305C382.8 348.9 422.5 482 494 502C445.8 543.4 376.6 556.4 325.2 533.8C274.6 511.5 240 451 240 384.4L240 267H276Z" fill="url(#uShadow)"/>
+    <path d="M530 152L530 354C530 453.3 466 526 386 526C356.1 526 329.4 515.8 307.9 498.6C329.2 507.8 353.2 513 378.6 513C462.6 513 530 442.2 530 354.2L530 152Z" fill="#D7D8DB" fill-opacity="0.68"/>
+  </g>
+</svg>
