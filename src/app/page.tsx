@@ -214,10 +214,59 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        <section id="trust-center" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <SectionHeader
+            badge="Trust Center"
+            title="Policies and answers in one place"
+            description="Read how data is handled, what platform rules apply, and common trust questions about anonymous feedback."
+          />
+
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Link
+              href="/privacy-policy"
+              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
+            >
+              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
+                <LockKeyhole className="h-4 w-4" />
+              </div>
+              <h3 className="mt-3 text-base font-extrabold text-slate-900">Privacy Policy</h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Learn what data we collect, what we do not collect, and data retention and deletion rules.
+              </p>
+            </Link>
+
+            <Link
+              href="/terms-of-service"
+              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
+            >
+              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
+                <BadgeCheck className="h-4 w-4" />
+              </div>
+              <h3 className="mt-3 text-base font-extrabold text-slate-900">Terms of Service</h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Review acceptable use, account responsibilities, and enforcement policies for safe platform usage.
+              </p>
+            </Link>
+
+            <Link
+              href="/faq"
+              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
+            >
+              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
+                <MessageSquareText className="h-4 w-4" />
+              </div>
+              <h3 className="mt-3 text-base font-extrabold text-slate-900">FAQ</h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Find quick answers about anonymity, abusive messages, moderation flow, and account controls.
+              </p>
+            </Link>
+          </div>
+        </section>
       </main>
 
       <footer className="relative mt-10 w-full border-t border-slate-300 bg-slate-950 text-slate-200">
-        <div className="grid gap-10 px-6 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12">
+        <div className="grid gap-10 px-6 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-5 lg:px-12">
           <div className="space-y-4 sm:col-span-2">
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-300 uppercase">
               <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
@@ -272,6 +321,32 @@ export default function Home() {
               Account
             </h3>
             <HomeFooterAccountLinks />
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
+              Legal
+            </h3>
+            <nav className="flex flex-col gap-2 text-sm">
+              <Link
+                href="/privacy-policy"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms-of-service"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/faq"
+                className="text-slate-200 transition-colors duration-200 hover:text-white"
+              >
+                FAQ
+              </Link>
+            </nav>
           </div>
         </div>
 
