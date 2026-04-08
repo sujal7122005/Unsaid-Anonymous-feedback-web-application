@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { authClient } from '../lib/auth-client'
 import toast from 'react-hot-toast'
-import { House, LayoutDashboard, LogOut, UserRound } from 'lucide-react'
+import { House, Info, LayoutDashboard, LogOut, Mail, UserRound } from 'lucide-react'
 
 const NAV_ITEMS = [
   {
@@ -16,6 +16,16 @@ const NAV_ITEMS = [
     href: '/dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    href: '/about',
+    label: 'About',
+    icon: Info,
+  },
+  {
+    href: '/contact',
+    label: 'Contact',
+    icon: Mail,
   },
 ]
 
@@ -146,6 +156,30 @@ function NavBar() {
             </>
           )}
         </div>
+      </div>
+
+      <div className="relative mx-auto w-full max-w-7xl px-4 pb-3 md:hidden sm:px-6 lg:px-8">
+        <nav className="flex items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white/90 p-1 shadow-sm">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon
+            const active = isItemActive(item.href)
+
+            return (
+              <Link
+                key={`${item.href}-mobile`}
+                href={item.href}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200 sm:text-sm ${
+                  active
+                    ? 'bg-slate-900 text-white shadow-md'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {item.label}
+              </Link>
+            )
+          })}
+        </nav>
       </div>
     </header>
   )
