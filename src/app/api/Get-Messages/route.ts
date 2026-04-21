@@ -1,15 +1,58 @@
 import connectDB from "@/src/lib/DBConnection";
 import { auth } from "@/src/lib/auth";
 import { headers } from "next/headers";
-import UserModel from "@/src/models/user";
+import UserModel, { type CustomLink, type Message } from "@/src/models/user";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { z } from "zod";
+
+const getMessagesQuerySchema = z.object({
+    inbox: z.enum(["general", "custom"]).default("general"),
+    customLinkId: z.string().optional(),
+});
 
 
 export async function GET(request: Request){
     await connectDB();
 
     try {
+        const { searchParams } = new URL(request.url);
+        const parsedQuery = getMessagesQuerySchema.safeParse({
+            inbox: searchParams.get("inbox") ?? undefined,
+            customLinkId: searchParams.get("customLinkId") ?? undefined,
+        });
+
+        if (!parsedQuery.success) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: parsedQuery.error.issues[0]?.message || "Invalid query params",
+                },
+                { status: 400 }
+            );
+        }
+
+        const { inbox, customLinkId } = parsedQuery.data;
+
+        if (inbox === "custom" && !customLinkId) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "customLinkId is required for custom inbox",
+                },
+                { status: 400 }
+            );
+        }
+
+        if (customLinkId && !mongoose.Types.ObjectId.isValid(customLinkId)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Invalid custom link id",
+                },
+                { status: 400 }
+            );
+        }
         
         const session = await auth.api.getSession({
             headers: await headers()
@@ -17,7 +60,7 @@ export async function GET(request: Request){
 
         const userId = session?.user.id;
 
-        if(!userId && !session){
+        if(!session || !userId){
             return NextResponse.json(
                 {
                     success: false,
@@ -27,14 +70,9 @@ export async function GET(request: Request){
             )
         }
 
-        const user = await UserModel.aggregate([
-            {$match: {_id: new mongoose.Types.ObjectId(userId)}},
-            {$unwind: "$messages"},
-            {$sort: { "messages.createdAt": -1 }},
-            {$group: { _id: "$_id", messages: { $push: "$messages" } }}
-        ])
+        const user = await UserModel.findById(userId).select("messages customLinks");
 
-        if(!user || user.length === 0){
+        if(!user){
             return NextResponse.json(
                 {
                     success: false,
@@ -44,11 +82,55 @@ export async function GET(request: Request){
             )
         }
 
+        let selectedCustomLink: {
+            id: string;
+            productName: string;
+            slug: string;
+        } | null = null;
+
+        if (inbox === "custom" && customLinkId) {
+            const customLink = user.customLinks.find(
+                (link: CustomLink) => String(link._id) === customLinkId && link.isActive !== false
+            );
+
+            if (!customLink || !customLink._id) {
+                return NextResponse.json(
+                    {
+                        success: false,
+                        message: "Custom link not found",
+                    },
+                    { status: 404 }
+                );
+            }
+
+            selectedCustomLink = {
+                id: String(customLink._id),
+                productName: customLink.productName,
+                slug: customLink.slug,
+            };
+        }
+
+        const filteredMessages = user.messages
+            .filter((message: Message) => {
+                if (inbox === "general") {
+                    // Legacy messages without inboxType are treated as general.
+                    return message.inboxType !== "custom";
+                }
+
+                return String(message.customLinkId ?? "") === customLinkId;
+            })
+            .sort(
+                (a: Message, b: Message) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+
         return NextResponse.json(
             {
                 success: true,
                 message: "Messages fetched successfully",
-                messages: user[0].messages,
+                inbox,
+                customLink: selectedCustomLink,
+                messages: filteredMessages,
             },
             {status: 200}
         )

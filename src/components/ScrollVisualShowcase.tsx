@@ -61,7 +61,6 @@ export default function ScrollVisualShowcase() {
 
   useEffect(() => {
     if (reduceMotion) {
-      setProgress(0.5)
       return
     }
 
@@ -101,6 +100,8 @@ export default function ScrollVisualShowcase() {
     }
   }, [reduceMotion])
 
+  const effectiveProgress = reduceMotion ? 0.5 : progress
+
   return (
     <section
       ref={sectionRef}
@@ -124,8 +125,8 @@ export default function ScrollVisualShowcase() {
           const offsetStrength = 26 + index * 8
           const rotationStrength = 6 + index * 2
 
-          const translateY = reduceMotion ? 0 : (0.5 - progress) * offsetStrength
-          const rotate = reduceMotion ? 0 : (progress - 0.5) * rotationStrength
+          const translateY = reduceMotion ? 0 : (0.5 - effectiveProgress) * offsetStrength
+          const rotate = reduceMotion ? 0 : (effectiveProgress - 0.5) * rotationStrength
 
           return (
             <article

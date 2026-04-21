@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, useState, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { authClient } from "@/src/lib/auth-client";
 import { verifySchema } from "@/src/velidationSchemas/verifySchema";
 import toast from "react-hot-toast";
@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 function VerifyEmailContent() {
 
   const searchParams = useSearchParams();
-  const router = useRouter();
   const email = searchParams.get("email") || "";
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);

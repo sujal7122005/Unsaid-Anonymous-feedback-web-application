@@ -1,20 +1,13 @@
 'use client'
+
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import MessageCard from '@/src/components/MessageCard'
 import { authClient } from '@/src/lib/auth-client'
-import {
-  Copy,
-  Link2,
-  Loader2,
-  MessageSquareText,
-  RefreshCcw,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react'
+import { Copy, Loader2, Plus, RefreshCcw, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 type MessageCardData = {
@@ -23,15 +16,31 @@ type MessageCardData = {
   createdAt: string | Date
 }
 
+type CustomLinkData = {
+  id: string
+  productName: string
+  slug: string
+  createdAt: string | Date
+}
+
+const MAX_CUSTOM_LINKS = 2
+
 function DashboardPage() {
-  const [messages, setMessages] = useState<MessageCardData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-  const [acceptMessages, setAcceptMessages] = useState(false);
+  const [messages, setMessages] = useState<MessageCardData[]>([])
+  const [customLinks, setCustomLinks] = useState<CustomLinkData[]>([])
+  const [activeInbox, setActiveInbox] = useState<string>('general')
+  const [customProductName, setCustomProductName] = useState('')
+
+  const [acceptMessages, setAcceptMessages] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSwitchLoading, setIsSwitchLoading] = useState(false)
+  const [isCustomLinksLoading, setIsCustomLinksLoading] = useState(false)
+  const [isCreateLinkLoading, setIsCreateLinkLoading] = useState(false)
+  const [deletingLinkId, setDeletingLinkId] = useState<string | null>(null)
 
   const router = useRouter()
-
   const { data: session, isPending } = authClient.useSession()
+
   useEffect(() => {
     if (!session && !isPending) {
       router.replace('/login')
@@ -40,45 +49,36 @@ function DashboardPage() {
 
   useEffect(() => {
     if (session && !isPending) {
-      fetchStatusAcceptMessages();
-      fetchMessages();
+      fetchStatusAcceptMessages()
+      fetchCustomLinks()
     }
-  }, [session, isPending]);
+  }, [session, isPending])
 
-  if (!session) {
-    return null
-  }
+  const copyToClipboard = async (value: string, successMessage: string) => {
+    if (!value) {
+      toast.error('Link is not ready yet', { duration: 2000 })
+      return
+    }
 
-  const BaseUrl = window.location.protocol + '//' + window.location.host
-  const encodedUsername = encodeURIComponent(session.user.name ?? '')
-  const profileUrl = `${BaseUrl}/u/${encodedUsername}`
-  const totalMessages = messages.length
-
-  const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(profileUrl)
-      toast.success('Profile URL copied to clipboard!', { duration: 2000 })
+      await navigator.clipboard.writeText(value)
+      toast.success(successMessage, { duration: 2000 })
     } catch {
-      toast.error('Could not copy the profile URL', { duration: 2000 })
+      toast.error('Could not copy link', { duration: 2000 })
     }
   }
-
-  const handleDeleteMessage = (messageId?: string) => {
-    if (!messageId) return;
-    setMessages((prevMessages) => prevMessages.filter((message) => message._id !== messageId));
-  };
 
   const fetchStatusAcceptMessages = async () => {
     setIsSwitchLoading(true)
     try {
-      const response = await fetch('/api/Accepting-Messages');
-      const data = await response.json();
+      const response = await fetch('/api/Accepting-Messages')
+      const data = await response.json()
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fetch settings')
       }
 
-      setAcceptMessages(Boolean(data.isAcceptingMessages));
+      setAcceptMessages(Boolean(data.isAcceptingMessages))
     } catch {
       toast.error('Failed to fetch settings', { duration: 2000 })
     } finally {
@@ -86,17 +86,189 @@ function DashboardPage() {
     }
   }
 
+  const fetchCustomLinks = async () => {
+    setIsCustomLinksLoading(true)
+    try {
+      const response = await fetch('/api/Custom-Links')
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to fetch custom links')
+      }
+
+      const links = Array.isArray(data.customLinks) ? data.customLinks : []
+      setCustomLinks(links)
+
+      setActiveInbox((previousInbox) => {
+        if (previousInbox === 'general') {
+          return previousInbox
+        }
+
+        const exists = links.some((link: CustomLinkData) => link.id === previousInbox)
+        return exists ? previousInbox : 'general'
+      })
+    } catch {
+      toast.error('Failed to fetch custom links', { duration: 2000 })
+    } finally {
+      setIsCustomLinksLoading(false)
+    }
+  }
+
+  const fetchMessages = useCallback(
+    async (refresh: boolean = false, inboxTarget: string = activeInbox) => {
+      setIsLoading(true)
+
+      try {
+        const query = new URLSearchParams()
+
+        if (inboxTarget === 'general') {
+          query.set('inbox', 'general')
+        } else {
+          query.set('inbox', 'custom')
+          query.set('customLinkId', inboxTarget)
+        }
+
+        const response = await fetch(`/api/Get-Messages?${query.toString()}`)
+        const data = await response.json()
+
+        if (response.status === 404) {
+          setMessages([])
+          return
+        }
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to fetch messages')
+        }
+
+        setMessages(Array.isArray(data.messages) ? data.messages : [])
+
+        if (refresh) {
+          toast.success('Messages refreshed!', { duration: 2000 })
+        }
+      } catch {
+        toast.error('Failed to fetch messages', { duration: 2000 })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [activeInbox],
+  )
+
+  useEffect(() => {
+    if (session && !isPending) {
+      fetchMessages()
+    }
+  }, [session, isPending, fetchMessages])
+
+  if (!session) {
+    return null
+  }
+
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const encodedUsername = encodeURIComponent(session.user.name ?? '')
+  const profileUrl = `${baseUrl}/u/${encodedUsername}`
+  const activeCustomLink = customLinks.find((link) => link.id === activeInbox)
+
+  const handleCreateCustomLink = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const productName = customProductName.trim()
+
+    if (productName.length < 2) {
+      toast.error('Product name must be at least 2 characters', { duration: 2000 })
+      return
+    }
+
+    if (customLinks.length >= MAX_CUSTOM_LINKS) {
+      toast.error(`You can create up to ${MAX_CUSTOM_LINKS} custom links`, { duration: 2000 })
+      return
+    }
+
+    setIsCreateLinkLoading(true)
+
+    try {
+      const response = await fetch('/api/Custom-Links', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productName }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create custom link')
+      }
+
+      setCustomProductName('')
+      toast.success(data.message || 'Custom link created', { duration: 2000 })
+
+      await fetchCustomLinks()
+      if (data.customLink?.id) {
+        setActiveInbox(data.customLink.id)
+      }
+    } catch {
+      toast.error('Failed to create custom link', { duration: 2000 })
+    } finally {
+      setIsCreateLinkLoading(false)
+    }
+  }
+
+  const handleDeleteCustomLink = async (link: CustomLinkData) => {
+    const shouldDelete = window.confirm(
+      `Delete ${link.productName} link? This will remove messages in that custom inbox.`,
+    )
+
+    if (!shouldDelete) {
+      return
+    }
+
+    setDeletingLinkId(link.id)
+
+    try {
+      const response = await fetch('/api/Custom-Links', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ linkId: link.id }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to delete custom link')
+      }
+
+      toast.success(data.message || 'Custom link deleted', { duration: 2000 })
+
+      const nextInbox = activeInbox === link.id ? 'general' : activeInbox
+      setActiveInbox(nextInbox)
+      await fetchCustomLinks()
+
+      if (nextInbox === 'general') {
+        await fetchMessages(false, 'general')
+      }
+    } catch {
+      toast.error('Failed to delete custom link', { duration: 2000 })
+    } finally {
+      setDeletingLinkId(null)
+    }
+  }
+
   const handleSwitchChange = async (checked: boolean) => {
-    setIsSwitchLoading(true);
+    setIsSwitchLoading(true)
     try {
       const response = await fetch('/api/Accepting-Messages', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ acceptingMessages: checked })
-      });
-      const data = await response.json();
+        body: JSON.stringify({ acceptingMessages: checked }),
+      })
+
+      const data = await response.json()
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update settings')
@@ -105,231 +277,204 @@ function DashboardPage() {
       const updatedValue =
         typeof data.userData?.isAcceptingMessages === 'boolean'
           ? data.userData.isAcceptingMessages
-          : checked;
-      setAcceptMessages(updatedValue);
-      toast.success('Preferences updated!', { duration: 2000 });
+          : checked
+
+      setAcceptMessages(updatedValue)
+      toast.success('Preferences updated!', { duration: 2000 })
     } catch {
-      toast.error('Failed to update settings', { duration: 2000 });
+      toast.error('Failed to update settings', { duration: 2000 })
     } finally {
-      setIsSwitchLoading(false);
+      setIsSwitchLoading(false)
     }
-  };
+  }
 
-  const fetchMessages = async (refresh: boolean = false) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/Get-Messages');
-      const data = await response.json();
-
-      if (response.status === 404) {
-        setMessages([]);
-        return;
-      }
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Failed to fetch messages')
-      }
-
-      setMessages(Array.isArray(data.messages) ? data.messages : []);
-
-      if (refresh) {
-        toast.success('Messages refreshed!', { duration: 2000 });
-      }
-    } catch {
-      toast.error('Failed to fetch messages', { duration: 2000 });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleDeleteMessage = (messageId?: string) => {
+    if (!messageId) return
+    setMessages((prev) => prev.filter((message) => message._id !== messageId))
+  }
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-100 via-zinc-100 to-stone-200 px-4 py-8 sm:px-6 lg:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-28 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-300/30 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-6 right-0 h-56 w-56 rounded-full bg-amber-200/40 blur-3xl"
-      />
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+      <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+        <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">
+          {session.user.name} Dashboard
+        </h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Manage your general link and up to {MAX_CUSTOM_LINKS} custom feedback links.
+        </p>
+      </section>
 
-      <div className="relative mx-auto max-w-7xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-4 duration-700 rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_24px_70px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm sm:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-300/80 bg-white/80 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-slate-600 uppercase">
-                
-                
-              </div>
-              <h1 className="text-3xl leading-tight font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                {session?.user?.name || 'User'}'s Dashboard
-              </h1>
-              <p className="max-w-2xl text-sm text-slate-600 sm:text-base">
-                Share your public link, control message privacy, and monitor your
-                incoming anonymous feedback in one place.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              <div className="rounded-2xl border border-slate-300/70 bg-white/90 px-4 py-3 shadow-sm">
-                <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                  Inbox Size
-                </p>
-                <p className="mt-1 text-2xl font-black text-slate-900">
-                  {totalMessages}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-slate-300/70 bg-white/90 px-4 py-3 shadow-sm">
-                <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
-                  Message Mode
-                </p>
-                <p className="mt-1 text-sm font-bold text-slate-900 sm:text-base">
-                  {acceptMessages ? 'Accepting' : 'Paused'}
-                </p>
-              </div>
-            </div>
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-300 bg-white p-5">
+          <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
+            General Link
+          </p>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+            <input
+              value={profileUrl}
+              disabled
+              className="h-10 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-700"
+            />
+            <Button
+              className="h-10"
+              onClick={() => copyToClipboard(profileUrl, 'General link copied!')}
+            >
+              <Copy className="h-4 w-4" />
+              Copy
+            </Button>
           </div>
-        </section>
+        </div>
 
-        <section className="grid animate-in fade-in-0 slide-in-from-bottom-4 duration-700 gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
-          <div className="rounded-3xl border border-slate-300/70 bg-white/90 p-6 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.4)] backdrop-blur-sm sm:p-7">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-                  Public Profile Link
-                </p>
-                <h2 className="mt-2 text-xl font-black text-slate-900 sm:text-2xl">
-                  Copy Your Unique Link
-                </h2>
-              </div>
-              <div className="rounded-xl border border-slate-300 bg-slate-50 p-2 text-slate-700">
-                <Link2 className="h-4 w-4" />
-              </div>
-            </div>
-
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-              <input
-                type="text"
-                value={profileUrl}
-                disabled
-                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 shadow-inner"
-              />
-              <Button
-                onClick={copyToClipboard}
-                className="h-11 min-w-32 rounded-xl px-4 text-sm font-bold"
-              >
-                <Copy className="h-4 w-4" />
-                Copy Link
-              </Button>
-            </div>
-
-            <p className="mt-3 text-xs text-slate-500 sm:text-sm">
-              Anyone with this URL can send you anonymous feedback. Keep sharing
-              it where your audience is active.
-            </p>
+        <div className="rounded-2xl border border-slate-300 bg-white p-5">
+          <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
+            Message Mode
+          </p>
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-300 bg-slate-50 p-3">
+            <span className="text-sm font-semibold text-slate-800">Accept Anonymous Messages</span>
+            <Switch
+              checked={acceptMessages}
+              onCheckedChange={handleSwitchChange}
+              disabled={isSwitchLoading}
+            />
           </div>
+        </div>
+      </section>
 
-          <div className="rounded-3xl border border-slate-300/70 bg-white/90 p-6 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.4)] backdrop-blur-sm sm:p-7">
-            <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-              Privacy Controls
+      <section className="rounded-2xl border border-slate-300 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">
+              Custom Links
             </p>
-            <h2 className="mt-2 text-xl font-black text-slate-900 sm:text-2xl">
-              Message Preferences
+            <h2 className="text-xl font-black text-slate-900">Product Links</h2>
+          </div>
+          <span className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
+            {customLinks.length}/{MAX_CUSTOM_LINKS} used
+          </span>
+        </div>
+
+        <form onSubmit={handleCreateCustomLink} className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <input
+            value={customProductName}
+            onChange={(event) => setCustomProductName(event.target.value)}
+            placeholder="Product name"
+            className="h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700"
+          />
+          <Button type="submit" disabled={isCreateLinkLoading || customLinks.length >= MAX_CUSTOM_LINKS}>
+            {isCreateLinkLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Create
+          </Button>
+        </form>
+
+        {isCustomLinksLoading ? (
+          <p className="mt-4 text-sm text-slate-600">Loading custom links...</p>
+        ) : customLinks.length > 0 ? (
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            {customLinks.map((link) => {
+              const customUrl = `${baseUrl}/u/${encodedUsername}/p/${encodeURIComponent(link.slug)}`
+
+              return (
+                <div key={link.id} className="rounded-xl border border-slate-300 bg-slate-50 p-3">
+                  <p className="text-sm font-bold text-slate-900">{link.productName}</p>
+                  <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                    <input
+                      value={customUrl}
+                      disabled
+                      className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-xs text-slate-700"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="h-9"
+                      onClick={() => copyToClipboard(customUrl, `${link.productName} link copied!`)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="h-9"
+                      onClick={() => handleDeleteCustomLink(link)}
+                      disabled={deletingLinkId === link.id}
+                    >
+                      {deletingLinkId === link.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-slate-600">No custom links created yet.</p>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-slate-300 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Inbox</p>
+            <h2 className="text-xl font-black text-slate-900">
+              {activeInbox === 'general' ? 'General Inbox' : activeCustomLink?.productName || 'Custom Inbox'}
             </h2>
+          </div>
+          <Button variant="outline" onClick={() => fetchMessages(true, activeInbox)}>
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
+            Refresh
+          </Button>
+        </div>
 
-            <div className="mt-5 flex items-center justify-between rounded-2xl border border-slate-300 bg-slate-50 p-4">
-              <div>
-                <p className="text-sm font-bold text-slate-900">
-                  Accept Anonymous Messages
-                </p>
-                <p className="text-xs text-slate-500">
-                  Turn this off any time to pause new submissions.
-                </p>
-              </div>
-              <Switch
-                checked={acceptMessages}
-                onCheckedChange={handleSwitchChange}
-                disabled={isSwitchLoading}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveInbox('general')}
+            className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+              activeInbox === 'general'
+                ? 'border-slate-900 bg-slate-900 text-white'
+                : 'border-slate-300 bg-white text-slate-700'
+            }`}
+          >
+            General
+          </button>
+          {customLinks.map((link) => (
+            <button
+              key={link.id}
+              type="button"
+              onClick={() => setActiveInbox(link.id)}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                activeInbox === link.id
+                  ? 'border-slate-900 bg-slate-900 text-white'
+                  : 'border-slate-300 bg-white text-slate-700'
+              }`}
+            >
+              {link.productName}
+            </button>
+          ))}
+        </div>
+
+        <Separator className="my-4" />
+
+        {isLoading ? (
+          <p className="text-sm text-slate-600">Loading messages...</p>
+        ) : messages.length > 0 ? (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {messages.map((message, index) => (
+              <MessageCard
+                key={message._id ?? `${message.createdAt}-${index}`}
+                message={message}
+                onMessageDelete={handleDeleteMessage}
               />
-            </div>
-
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 sm:text-sm">
-              <ShieldCheck className="h-4 w-4" />
-              Status: {acceptMessages ? 'Live and accepting' : 'Paused for now'}
-            </div>
+            ))}
           </div>
-        </section>
-
-        <section className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 rounded-3xl border border-slate-300/70 bg-white/90 p-5 shadow-[0_22px_65px_-40px_rgba(15,23,42,0.45)] backdrop-blur-sm sm:p-7">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-                Inbox
-              </p>
-              <h2 className="mt-1 text-2xl font-black text-slate-900">
-                Anonymous Messages
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 sm:text-sm">
-                {totalMessages} total
-              </span>
-              <Button
-                variant="outline"
-                className="h-10 rounded-xl px-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  fetchMessages(true);
-                }}
-              >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <RefreshCcw className="h-4 w-4" />
-                )}
-                Refresh
-              </Button>
-            </div>
-          </div>
-
-          <Separator className="my-5 bg-slate-300/70" />
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {[1, 2].map((item) => (
-                <div
-                  key={item}
-                  className="h-44 animate-pulse rounded-2xl border border-slate-300/70 bg-slate-100"
-                />
-              ))}
-            </div>
-          ) : messages.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {messages.map((message, index) => (
-                <MessageCard
-                  key={message._id ?? `${message.createdAt}-${index}`}
-                  message={message}
-                  onMessageDelete={handleDeleteMessage}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex min-h-52 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/80 px-6 text-center">
-              <MessageSquareText className="h-9 w-9 text-slate-500" />
-              <h3 className="mt-4 text-lg font-bold text-slate-800">
-                No messages yet
-              </h3>
-              <p className="mt-1 max-w-md text-sm text-slate-600">
-                Your inbox is ready. Share your profile link and responses will
-                start appearing here.
-              </p>
-            </div>
-          )}
-        </section>
-      </div>
+        ) : (
+          <p className="text-sm text-slate-600">No messages in this inbox yet.</p>
+        )}
+      </section>
     </div>
-  );
+  )
 }
 
 export default DashboardPage

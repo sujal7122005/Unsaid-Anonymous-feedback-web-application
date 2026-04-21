@@ -95,15 +95,7 @@ function buildRandomizedMessages() {
 
 export default function MessageTimeCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [messagesByTimeframe, setMessagesByTimeframe] = useState(() => ({
-    today: messagePool.today.slice(0, CARDS_PER_TIMEFRAME),
-    lastDay: messagePool.lastDay.slice(0, CARDS_PER_TIMEFRAME),
-    lastWeek: messagePool.lastWeek.slice(0, CARDS_PER_TIMEFRAME),
-  }))
-
-  useEffect(() => {
-    setMessagesByTimeframe(buildRandomizedMessages())
-  }, [])
+  const [messagesByTimeframe] = useState(() => buildRandomizedMessages())
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
