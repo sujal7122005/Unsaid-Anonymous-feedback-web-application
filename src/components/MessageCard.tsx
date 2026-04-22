@@ -93,14 +93,14 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
   }
 
   return (
-    <Card className="mx-auto w-[95%] overflow-hidden rounded-b-lg border border-gray-300 bg-white shadow-[0_18px_50px_-30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.6)]">
-      <CardHeader className="gap-4 border-b border-gray-100 bg-linear-to-r from-white via-gray-50 to-white px-6 py-5">
+    <Card className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_14px_30px_-24px_rgba(15,23,42,0.4)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_40px_-26px_rgba(15,23,42,0.45)]">
+      <CardHeader className="gap-4 border-b border-slate-100 bg-linear-to-r from-white via-slate-50 to-white px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <CardDescription className="text-xs font-bold uppercase tracking-[0.26em] text-gray-500">
+            <CardDescription className="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
               Anonymous Message
             </CardDescription>
-            <CardTitle className="text-lg font-black tracking-tight text-black sm:text-2xl">
+            <CardTitle className="text-lg font-black tracking-tight text-slate-900 sm:text-xl">
               Message
             </CardTitle>
           </div>
@@ -112,7 +112,7 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
                 variant="destructive"
                 size="sm"
                 disabled={isDeleting}
-                className="h-10 rounded-xl px-3.5 text-sm font-semibold tracking-wide shadow-sm transition-all duration-200 hover:-translate-y-px hover:shadow-md"
+                className="h-9 rounded-xl px-3.5 text-sm font-semibold tracking-wide shadow-sm transition-all duration-200 hover:-translate-y-px hover:shadow-md"
               >
                 {isDeleting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -140,13 +140,13 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
           </AlertDialog>
         </div>
 
-        <div className="inline-flex w-fit items-center rounded-full border border-gray-300 bg-white px-2 py-0 text-xs font-semibold text-gray-800 shadow-xs">
+        <div className="inline-flex w-fit items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-semibold text-slate-700 shadow-xs">
           Received {formatMessageDate(message.createdAt)}
         </div>
       </CardHeader>
 
-      <CardContent className="px-6 py-5">
-        <p className="whitespace-pre-wrap rounded-2xl border border-gray-500 bg-gray-50/90 p-4 text-base leading-7 font-medium text-gray-950 sm:text-[20px]">
+      <CardContent className="px-5 py-4">
+        <p className="whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50/80 p-4 text-base leading-7 font-medium text-slate-900">
           {message.content}
         </p>
       </CardContent>
