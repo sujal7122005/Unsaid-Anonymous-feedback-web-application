@@ -1,13 +1,21 @@
 'use client'
 
+import { useSyncExternalStore } from 'react'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { authClient } from '@/src/lib/auth-client'
 
+const emptySubscribe = () => () => {}
+
 function HomeHeroActions() {
   const { data: session, isPending } = authClient.useSession()
+  const isHydrated = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  )
 
-  if (isPending) {
+  if (!isHydrated || isPending) {
     return null
   }
 

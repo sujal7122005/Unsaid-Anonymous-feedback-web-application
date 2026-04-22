@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { DottedSurface } from "@/components/ui/dotted-surface";
 import MessageTimeCarousel from "../components/MessageTimeCarousel";
 import HomeHeroActions from "../components/HomeHeroActions";
 import HomeFooterAccountLinks from "../components/HomeFooterAccountLinks";
@@ -99,11 +100,11 @@ function SectionHeader({
   description: string;
 }) {
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase transition-colors duration-300">
+    <div className="space-y-3">
+      <p className="text-xs font-semibold tracking-[0.16em] text-slate-500/90 uppercase transition-colors duration-300">
         {badge}
       </p>
-      <h2 className="text-2xl font-black text-slate-900 sm:text-3xl">
+      <h2 className="text-2xl leading-tight font-black text-slate-900 sm:text-3xl md:text-4xl">
         {title}
       </h2>
       <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
@@ -117,8 +118,8 @@ function FeatureCard({ feature }: { feature: HomeFeature }) {
   const Icon = feature.icon;
 
   return (
-    <article className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-lg motion-reduce:transition-none">
-      <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700 transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm">
+    <article className="group rounded-2xl border border-slate-200/80 bg-white/85 p-5 shadow-sm backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-xl motion-reduce:transition-none">
+      <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-700 transition-all duration-300 group-hover:scale-105 group-hover:bg-white group-hover:shadow-sm">
         <Icon className="h-4 w-4 transition-transform duration-300 group-hover:-rotate-6" />
       </div>
       <h3 className="mt-3 text-base font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-slate-950">
@@ -134,8 +135,8 @@ function FeatureCard({ feature }: { feature: HomeFeature }) {
 
 function StepCard({ step }: { step: HomeStep }) {
   return (
-    <article className="group rounded-2xl border border-slate-200 bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md motion-reduce:transition-none">
-      <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-xs font-black text-slate-700 transition-all duration-300 group-hover:bg-slate-100">
+    <article className="group rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg motion-reduce:transition-none">
+      <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-xs font-black text-slate-700 transition-all duration-300 group-hover:bg-white group-hover:shadow-sm">
         {step.id}
       </div>
       <h3 className="mt-3 text-base font-extrabold text-slate-900">{step.title}</h3>
@@ -148,39 +149,96 @@ export default function Home() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 py-10">
+    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#f4f6f8] py-8 text-slate-900 sm:py-10">
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-10 top-20 h-48 w-48 rounded-full bg-cyan-200/35 blur-3xl motion-safe:animate-pulse"
+        className="pointer-events-none absolute -left-14 top-16 h-56 w-56 rounded-full bg-cyan-100/70 blur-3xl motion-safe:animate-pulse"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-8 top-36 h-44 w-44 rounded-full bg-amber-200/35 blur-3xl motion-safe:animate-pulse"
+        className="pointer-events-none absolute -right-12 top-36 h-52 w-52 rounded-full bg-indigo-100/65 blur-3xl motion-safe:animate-pulse"
       />
 
-      <main className="relative w-full space-y-6">
-        <section id="home" className="animate-in fade-in-0 slide-in-from-top-3 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase">
-            <Sparkles className="h-3.5 w-3.5 transition-transform duration-300 hover:rotate-12" />
-            Unsaid
+      <main className="relative mx-auto w-full max-w-7xl space-y-7 px-4 sm:px-6 lg:px-8">
+        <section
+          id="home"
+          className="animate-in fade-in-0 slide-in-from-top-3 relative isolate w-full overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff,#f8fafc)] p-6 shadow-[0_35px_90px_-48px_rgba(15,23,42,0.45)] duration-700 sm:p-10"
+        >
+          <DottedSurface className="absolute inset-0 z-0 opacity-95 mask-[radial-gradient(ellipse_at_center,transparent_20%,black_34%,black_92%,transparent_100%)]" />
+
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.56)_45%,rgba(255,255,255,0.9)_82%)]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-44 bg-linear-to-b from-white/90 to-transparent"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -left-24 top-16 z-10 h-64 w-64 rounded-full bg-cyan-100/60 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 top-10 z-10 h-64 w-64 rounded-full bg-amber-100/55 blur-3xl"
+          />
+
+          <div className="relative z-20 mx-auto flex max-w-4xl flex-col items-center text-center">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase backdrop-blur-xs">
+              <Sparkles className="h-3.5 w-3.5 transition-transform duration-300 hover:rotate-12" />
+              Unsaid
+            </div>
+
+            <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl xl:text-6xl">
+              Feedback clarity,
+              <br />
+              without social pressure.
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+              Build a trusted space where people can share what they really
+              think. Unsaid gives you a private inbox, a shareable feedback
+              link, and controls that keep conversations safe and useful.
+            </p>
+
+            <div className="w-full [&>div]:mt-8 [&>div]:justify-center">
+              <HomeHeroActions />
+            </div>
+
+            <div className="mt-8 grid w-full max-w-3xl gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
+                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
+                  <LockKeyhole className="h-4 w-4" />
+                </div>
+                <p className="mt-2 text-sm font-bold text-slate-900">Private by default</p>
+                <p className="text-xs text-slate-600">Anonymous responses with secure inbox ownership.</p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
+                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
+                  <BadgeCheck className="h-4 w-4" />
+                </div>
+                <p className="mt-2 text-sm font-bold text-slate-900">OTP verified</p>
+                <p className="text-xs text-slate-600">Protection against inbox spoofing and misuse.</p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
+                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
+                  <Link2 className="h-4 w-4" />
+                </div>
+                <p className="mt-2 text-sm font-bold text-slate-900">One link sharing</p>
+                <p className="text-xs text-slate-600">Collect feedback from communities in minutes.</p>
+              </div>
+            </div>
           </div>
-
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-            A place for the feedback
-            <br />
-            people usually keep unsaid.
-          </h1>
-
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-            Unsaid helps you understand how people really feel. Create your
-            anonymous inbox, share your personal link, and receive honest
-            messages that help you grow as a creator, student, or professional.
-          </p>
-
-          <HomeHeroActions />
         </section>
 
-        <section id="features" className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section id="features" className="animate-in fade-in-0 slide-in-from-bottom-3 relative overflow-hidden duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-slate-100/80 blur-3xl"
+          />
+
           <SectionHeader
             badge="Our Vision"
             title="Make honest feedback simple, safe, and useful"
@@ -201,7 +259,7 @@ export default function Home() {
 
         <MessageTimeCarousel />
 
-        <section id="how-it-works" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section id="how-it-works" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
           <SectionHeader
             badge="How It Works"
             title="From sign-up to meaningful insights"
@@ -215,7 +273,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="trust-center" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section id="trust-center" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
           <SectionHeader
             badge="Trust Center"
             title="Policies and answers in one place"

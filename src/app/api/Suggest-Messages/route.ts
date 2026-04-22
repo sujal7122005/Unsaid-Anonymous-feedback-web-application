@@ -14,26 +14,30 @@ const QUOTA_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes cooldown after 429
 
 // ----- Fallback suggestions when API quota is exhausted -----
 const FALLBACK_SUGGESTIONS = [
-  "What's a hobby you've recently started that you're excited about?",
-  "If you could have dinner with any historical figure, who would it be and why?",
-  "What's a simple thing that never fails to make you happy?",
-  "If you could instantly master any skill in the world, what would you choose?",
-  "What's a movie or book that completely changed your perspective on life?",
-  "If you could travel anywhere in the world tomorrow, where would you go?",
-  "What's the best piece of advice someone has ever given you?",
-  "What's one thing you're genuinely looking forward to this week?",
-  "If you could relive one perfect day from your past, which would it be?",
-  "What's a small act of kindness that someone did for you that you'll never forget?",
-  "What's a song that always puts you in a good mood no matter what?",
-  "If you could live in any era of history, which would you pick and why?",
-  "What's a goal you're quietly working toward right now?",
-  "If you could give your younger self one piece of advice, what would it be?",
-  "What's something you've learned recently that genuinely surprised you?",
-  "If your life had a theme song, what would it be?",
-  "What's a tradition or ritual you have that means a lot to you?",
-  "If you could switch lives with anyone for a day, who would it be?",
-  "What's the most underrated thing about your personality that people don't notice?",
-  "If you had an extra hour every day, how would you spend it?",
+  "One thing I genuinely admire about you is how respectfully you speak, even during disagreement.",
+  "You come across as confident and thoughtful, and your ideas usually make people think deeper.",
+  "You explain complex things clearly, which makes collaborating with you much easier.",
+  "A small improvement: try listening fully before replying; it could make your conversations even stronger.",
+  "You are consistent and reliable, but delegating more could reduce your stress and improve outcomes.",
+  "Your creativity stands out; sharing your process more often could inspire others.",
+  "You have strong leadership energy; clearer priorities could make team alignment even better.",
+  "I appreciate your honesty; balancing directness with warmth may help people receive feedback more openly.",
+  "You motivate people naturally; checking in on quieter members could make your impact even bigger.",
+  "Your work quality is strong; submitting a little earlier could reduce last-minute pressure.",
+  "You are easy to trust; protecting your time boundaries might help your energy stay consistent.",
+  "You communicate clearly in writing; adding concrete examples could make your points even more convincing.",
+  "I admire your discipline; celebrating small wins might help you stay motivated long-term.",
+  "You bring positive energy to the room and make teamwork smoother for everyone.",
+  "Your curiosity is a strength; asking one extra follow-up question could unlock better insights.",
+  "You are approachable and kind, which makes people comfortable sharing honest thoughts.",
+  "What is one habit you could improve this month that would most positively affect your goals?",
+  "What feedback do you hear repeatedly that feels true but is still hard to act on?",
+  "What personal strength do you underestimate that others probably notice immediately?",
+  "If you could improve one communication habit this week, which one would create the biggest change?",
+  "Your resilience is impressive; taking intentional rest could help you sustain that performance longer.",
+  "You are detail-oriented; stepping back to highlight the big picture might strengthen your influence.",
+  "I appreciate how accountable you are; mentoring someone newer could amplify your strengths.",
+  "You handle pressure well; asking for help sooner might prevent unnecessary burnout.",
 ];
 
 // Track previously served fallback suggestions to avoid repeats
@@ -52,8 +56,14 @@ function getRandomFallback(): string[] {
   }
 
   // Shuffle available indices and pick 3
-  const shuffled = availableIndices.sort(() => Math.random() - 0.5);
-  const pickedIndices = shuffled.slice(0, 3);
+  for (let i = availableIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [availableIndices[i], availableIndices[j]] = [
+      availableIndices[j],
+      availableIndices[i],
+    ];
+  }
+  const pickedIndices = availableIndices.slice(0, 3);
 
   // Track the served indices
   lastServedIndices.push(...pickedIndices);
@@ -68,7 +78,7 @@ export async function POST() {
       return NextResponse.json(
         {
           success: true,
-          message: "Using suggested questions (AI quota cooling down)",
+          message: "Using suggested messages (AI quota cooling down)",
           suggestions: getRandomFallback(),
         },
         { status: 200 }
@@ -90,20 +100,48 @@ export async function POST() {
     // 3) Call Gemini API (gemini-2.0-flash-lite has higher free-tier limits)
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: 'What's a hobby you've recently started?||If you could have dinner with any historical figure, who would it be?||What's a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
+    const prompt = `You are writing suggestion messages for an anonymous feedback platform called Unsaid.
+
+Goal:
+- Generate exactly 3 high-quality anonymous feedback suggestions that a sender can submit directly.
+- Suggestions must feel natural, respectful, and useful for personal growth.
+
+Content requirements:
+- Keep each suggestion between 12 and 24 words.
+- Use clear, everyday language.
+- Include this mix:
+  1) One appreciation-style feedback message.
+  2) One constructive improvement message.
+  3) One reflective question message.
+- Focus on themes like communication, attitude, consistency, collaboration, leadership, or self-improvement.
+
+Safety and quality rules:
+- No hate, harassment, bullying, explicit content, profanity, or violent language.
+- No requests for personal data, money, passwords, addresses, or contact details.
+- No political, medical, legal, or extremist topics.
+- Avoid generic small-talk prompts (travel, movies, dinner with celebrities, etc.).
+
+Formatting rules (strict):
+- Return only one line.
+- Separate the 3 suggestions with ||
+- No numbering, bullets, emojis, surrounding quotes, labels, or extra explanation.
+
+Output format:
+message one||message two||message three`;
 
     const result = await model.generateContent(prompt);
     const response = result.response;
     const text = response.text();
 
-    // Parse the '||' separated string from the response
+    // Parse the model output and normalize common formatting noise.
     const suggestions = text
-      .split("||")
+      .split(/\|\||\n+/)
       .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+      .map((s) => s.replace(/^[-*\d.)\s"'`]+/, ""))
+      .filter((s) => s.length > 0)
+      .slice(0, 3);
 
-    if (suggestions.length === 0) {
+    if (suggestions.length < 3) {
       throw new Error("Failed to parse suggestions from AI response");
     }
 
@@ -133,7 +171,7 @@ export async function POST() {
         {
           success: true,
           message:
-            "AI quota exceeded — showing suggested questions. Fresh AI suggestions will be available later.",
+            "AI quota exceeded — showing suggested messages. Fresh AI suggestions will be available later.",
           suggestions: getRandomFallback(),
         },
         { status: 200 }
