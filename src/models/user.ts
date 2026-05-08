@@ -22,6 +22,8 @@ export interface User extends Document {
     verificationcodeExpiry: Date;
     isVerified: boolean;
     isAcceptingMessages: boolean;
+    publicFeedToken?: string | null;
+    publicFeedTokenCreatedAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
     messages: Message[];
@@ -50,6 +52,8 @@ const UserSchema: Schema<User> = new Schema({
     verificationcodeExpiry: { type: Date },
     isVerified: { type: Boolean, default: false },
     isAcceptingMessages: { type: Boolean, default: true },
+    publicFeedToken: { type: String, default: null },
+    publicFeedTokenCreatedAt: { type: Date, default: null },
     messages: [MessageSchema],
     customLinks: { type: [CustomLinkSchema], default: [] }
 }, { timestamps: true });

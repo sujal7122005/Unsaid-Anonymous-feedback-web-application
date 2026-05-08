@@ -4,6 +4,7 @@ import { emailOTP } from "better-auth/plugins";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import bcrypt from "bcryptjs";
 import { sendVerificationMail } from "@/src/helpers/SendVerificationMail";
+import { generatePublicFeedToken } from "@/src/lib/public-feed";
 
 const client = new MongoClient(process.env.MONGO_URI as string);
 const db = client.db();
@@ -44,6 +45,8 @@ export const auth = betterAuth({
                             messages: [],              // ✅ proper empty array
                             isAcceptingMessages: true,
                             customLinks: [],
+                            publicFeedToken: generatePublicFeedToken(),
+                            publicFeedTokenCreatedAt: new Date(),
                         }}
                     );
                 }

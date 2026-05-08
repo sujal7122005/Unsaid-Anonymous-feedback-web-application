@@ -41,6 +41,7 @@ function DashboardPage() {
   const [customLinks, setCustomLinks] = useState<CustomLinkData[]>([])
   const [activeInbox, setActiveInbox] = useState<string>('general')
   const [customProductName, setCustomProductName] = useState('')
+  const [publicFeedToken, setPublicFeedToken] = useState<string | null>(null)
 
   const [acceptMessages, setAcceptMessages] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -48,6 +49,8 @@ function DashboardPage() {
   const [isCustomLinksLoading, setIsCustomLinksLoading] = useState(false)
   const [isCreateLinkLoading, setIsCreateLinkLoading] = useState(false)
   const [deletingLinkId, setDeletingLinkId] = useState<string | null>(null)
+  const [isPublicFeedLoading, setIsPublicFeedLoading] = useState(false)
+  const [isPublicFeedRegenerating, setIsPublicFeedRegenerating] = useState(false)
 
   const router = useRouter()
   const { data: session, isPending } = authClient.useSession()
@@ -62,6 +65,7 @@ function DashboardPage() {
     if (session && !isPending) {
       fetchStatusAcceptMessages()
       fetchCustomLinks()
+      fetchPublicFeedToken()
     }
   }, [session, isPending])
 
@@ -125,6 +129,45 @@ function DashboardPage() {
     }
   }
 
+  const fetchPublicFeedToken = async () => {
+    setIsPublicFeedLoading(true)
+
+    try {
+      const response = await fetch('/api/Public-Feed')
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to fetch public feed token')
+      }
+
+      setPublicFeedToken(data.publicFeedToken || null)
+    } catch {
+      toast.error('Failed to fetch public feed token', { duration: 2000 })
+    } finally {
+      setIsPublicFeedLoading(false)
+    }
+  }
+
+  const handleRegeneratePublicFeedToken = async () => {
+    setIsPublicFeedRegenerating(true)
+
+    try {
+      const response = await fetch('/api/Public-Feed', { method: 'POST' })
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to regenerate token')
+      }
+
+      setPublicFeedToken(data.publicFeedToken || null)
+      toast.success('Public feed token regenerated', { duration: 2000 })
+    } catch {
+      toast.error('Failed to regenerate token', { duration: 2000 })
+    } finally {
+      setIsPublicFeedRegenerating(false)
+    }
+  }
+
   const fetchMessages = useCallback(
     async (refresh: boolean = false, inboxTarget: string = activeInbox) => {
       setIsLoading(true)
@@ -178,6 +221,9 @@ function DashboardPage() {
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
   const encodedUsername = encodeURIComponent(session.user.name ?? '')
   const profileUrl = `${baseUrl}/u/${encodedUsername}`
+  const publicFeedUrl = publicFeedToken
+    ? `${baseUrl}/u/${encodedUsername}/messages?token=${encodeURIComponent(publicFeedToken)}`
+    : ''
   const activeCustomLink = customLinks.find((link) => link.id === activeInbox)
   const totalInboxes = 1 + customLinks.length
   const customLinksRemaining = Math.max(0, MAX_CUSTOM_LINKS - customLinks.length)
@@ -403,6 +449,55 @@ function DashboardPage() {
               />
             </div>
           </article>
+        </section>
+
+        <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Public JSON Feed</p>
+              <h2 className="mt-1 text-2xl font-black text-slate-900">Embeddable Messages Endpoint</h2>
+              <p className="mt-1 text-sm text-slate-600">
+                Use this link to fetch your latest 10 anonymous messages for external websites.
+              </p>
+            </div>
+            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
+              Rate limited
+            </span>
+          </div>
+
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <input
+              value={isPublicFeedLoading ? 'Loading...' : publicFeedUrl}
+              disabled
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700"
+            />
+            <Button
+              className="h-11 px-4"
+              onClick={() => copyToClipboard(publicFeedUrl, 'Public feed link copied!')}
+              disabled={isPublicFeedLoading}
+            >
+              <Copy className="h-4 w-4" />
+              Copy Feed Link
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 px-4"
+              onClick={handleRegeneratePublicFeedToken}
+              disabled={isPublicFeedRegenerating}
+            >
+              {isPublicFeedRegenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCcw className="h-4 w-4" />
+              )}
+              Regenerate
+            </Button>
+          </div>
+
+          <p className="mt-3 text-xs text-slate-600">
+            Keep this link private. Regenerating the token will disable the previous link.
+          </p>
         </section>
 
         <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
