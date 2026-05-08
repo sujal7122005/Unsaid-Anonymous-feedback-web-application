@@ -482,7 +482,7 @@ function DashboardPage() {
             <Button
               type="button"
               variant="outline"
-              className="h-11 px-4"
+              className="h-11 border-slate-300 bg-white px-4 text-slate-700 hover:bg-slate-100"
               onClick={handleRegeneratePublicFeedToken}
               disabled={isPublicFeedRegenerating}
             >
