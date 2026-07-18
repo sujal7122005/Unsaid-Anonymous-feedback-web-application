@@ -76,12 +76,17 @@ function NavBar() {
             <>
               {session?.user ? (
                 <>
-                  <div className="hidden sm:flex font-mono-caps text-[11px] text-[#949494]">
-                    {session.user.name || 'USER'}
+                  <div className="hidden sm:flex items-center gap-2 rounded-full border border-[#313131] bg-[#1a1a1a] pl-1 pr-3 py-1">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#3cffd0] text-[#000000] font-bold text-[10px] font-mono-caps">
+                      {session.user.name ? session.user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <span className="font-mono-caps text-[10px] text-white">
+                      {session.user.name?.toUpperCase() || 'USER'}
+                    </span>
                   </div>
                   <button
                     onClick={handleSignOut}
-                    className="font-mono-caps text-[11px] text-[#ffffff] verge-link flex items-center gap-1"
+                    className="flex items-center gap-1.5 rounded-[24px] border border-[#ffffff] bg-transparent px-4 py-1.5 font-mono-caps text-[10px] text-white transition-colors hover:bg-white hover:text-black"
                   >
                     <LogOut className="h-3 w-3" />
                     SIGN OUT
