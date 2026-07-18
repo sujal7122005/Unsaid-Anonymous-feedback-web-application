@@ -24,47 +24,38 @@ const accountRules = [
 
 export default function TermsOfServicePage() {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 px-4 py-8 sm:px-6 lg:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-8 top-20 h-52 w-52 rounded-full bg-cyan-200/30 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-0 top-36 h-48 w-48 rounded-full bg-amber-200/35 blur-3xl"
-      />
-
-      <main className="relative mx-auto max-w-6xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] px-4 py-12 sm:px-6 lg:px-10">
+      <main className="relative mx-auto max-w-6xl space-y-12">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8 lg:p-10">
+          <div className="inline-flex items-center gap-2 rounded-[2px] border border-[#3cffd0] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
             <Sparkles className="h-3.5 w-3.5" />
-            Terms of Service
+            TERMS OF SERVICE
           </div>
 
-          <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Platform rules for safe and fair use.
+          <h1 className="mt-6 font-display text-[60px] sm:text-[80px] uppercase text-white leading-[0.9]">
+            PLATFORM RULES FOR SAFE AND FAIR USE.
           </h1>
 
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-6 max-w-3xl font-sans text-[18px] leading-relaxed text-white">
             By using Unsaid, you agree to these terms. They define acceptable use, account responsibility, and the rights
             that protect both users and the platform.
           </p>
 
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 sm:text-sm">
+          <div className="mt-8 inline-flex items-center gap-2 font-mono-caps text-[12px] text-[#3cffd0]">
             <BadgeCheck className="h-4 w-4" />
-            Effective date: April 8, 2026
+            EFFECTIVE DATE: APRIL 8, 2026
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-2">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Acceptable use</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">What is not allowed</h2>
-            <div className="mt-5 space-y-3">
+        <section className="grid gap-6 lg:grid-cols-2">
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[12px] text-[#949494]">ACCEPTABLE USE</p>
+            <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">WHAT IS NOT ALLOWED</h2>
+            <div className="mt-8 space-y-3">
               {acceptableUseRules.map((rule) => (
                 <div
                   key={rule}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
+                  className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4 font-sans text-[16px] text-white"
                 >
                   {rule}
                 </div>
@@ -72,14 +63,14 @@ export default function TermsOfServicePage() {
             </div>
           </div>
 
-          <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Accounts</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">User responsibilities</h2>
-            <div className="mt-5 space-y-3">
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[12px] text-[#949494]">ACCOUNTS</p>
+            <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">USER RESPONSIBILITIES</h2>
+            <div className="mt-8 space-y-3">
               {accountRules.map((rule) => (
                 <div
                   key={rule}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
+                  className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4 font-sans text-[16px] text-white"
                 >
                   {rule}
                 </div>
@@ -88,60 +79,60 @@ export default function TermsOfServicePage() {
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Enforcement and legal</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">How terms are applied</h2>
+        <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[12px] text-[#949494]">ENFORCEMENT AND LEGAL</p>
+            <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">HOW TERMS ARE APPLIED</h2>
 
-            <div className="mt-5 space-y-3 text-sm leading-relaxed text-slate-700">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <div className="mt-8 space-y-3 font-sans text-[16px] leading-relaxed text-white">
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4">
                 Unsaid can remove content, restrict features, or suspend accounts when platform rules are violated.
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4">
                 Service availability may change over time. Features can be updated, paused, or discontinued to maintain quality and security.
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4">
                 Unsaid is provided on an as-is basis. To the maximum extent allowed by law, liability is limited for indirect or consequential losses.
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4">
                 Terms may be updated as the product evolves. Continued use after updates means acceptance of revised terms.
               </div>
             </div>
           </div>
 
-          <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-              <ShieldCheck className="h-4 w-4" />
+          <aside className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <div className="inline-flex text-[#3cffd0]">
+              <ShieldCheck className="h-6 w-6" />
             </div>
-            <h3 className="mt-3 text-lg font-extrabold text-slate-900">Questions about these terms</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            <h3 className="mt-4 font-display text-[30px] uppercase text-white leading-[0.9]">QUESTIONS ABOUT THESE TERMS</h3>
+            <p className="mt-4 font-sans text-[16px] leading-relaxed text-[#949494]">
               Contact the support email for legal or policy clarification requests.
             </p>
 
             <a
               href="mailto:sujalpatel6624@gmail.com?subject=Unsaid%20Terms%20Question"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-md"
+              className="mt-8 dark-slate-pill h-12 px-6 flex flex-wrap items-center justify-center gap-2 w-full text-center"
             >
               <Mail className="h-4 w-4" />
-              sujalpatel6624@gmail.com
+              SUJALPATEL6624@GMAIL.COM
             </a>
           </aside>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/privacy-policy"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-px hover:bg-black hover:shadow-lg"
+              className="jelly-mint-pill h-12 px-6 flex items-center justify-center gap-2"
             >
-              Read Privacy Policy
+              READ PRIVACY POLICY
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/faq"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-md"
+              className="dark-slate-pill h-12 px-6 flex items-center justify-center gap-2"
             >
-              Go to FAQ
+              GO TO FAQ
             </Link>
           </div>
         </section>

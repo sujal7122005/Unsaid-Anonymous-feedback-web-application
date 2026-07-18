@@ -117,57 +117,46 @@ function Page() {
   }
 
   return (
-    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-100 via-zinc-100 to-stone-200 px-4 py-8 sm:px-6 lg:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-28 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-300/30 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-8 right-0 h-56 w-56 rounded-full bg-amber-200/40 blur-3xl"
-      />
-
-      <div className="relative mx-auto max-w-7xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-3 duration-700 rounded-3xl border border-white/70 bg-white/85 p-6 shadow-[0_24px_70px_-36px_rgba(15,23,42,0.45)] backdrop-blur-sm sm:p-8">
-          <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-            Product Feedback Link
+    <main className="relative min-h-[calc(100vh-80px)] bg-[#131313] px-4 py-12 sm:px-6 lg:px-10">
+      <div className="relative mx-auto max-w-7xl space-y-12">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+          <p className="inline-flex items-center gap-2 rounded-[2px] border border-[#3cffd0] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
+            PRODUCT FEEDBACK LINK
           </p>
-          <h1 className="mt-2 text-3xl leading-tight font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Send anonymous feedback for {displayProductName} to {displayUsername}
+          <h1 className="mt-6 font-display text-[60px] sm:text-[70px] uppercase text-white leading-[0.9]">
+            SEND ANONYMOUS FEEDBACK FOR<br />{displayProductName} TO {displayUsername}
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
-            This form submits directly to a dedicated product inbox.
+          <p className="mt-4 max-w-2xl font-mono-caps text-[12px] text-[#949494] leading-relaxed">
+            THIS FORM SUBMITS DIRECTLY TO A DEDICATED PRODUCT INBOX.
           </p>
         </section>
 
-        <section className="grid animate-in fade-in-0 slide-in-from-bottom-4 duration-700 gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
-          <div className="rounded-3xl border border-slate-300/70 bg-white/90 p-6 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.4)] backdrop-blur-sm sm:p-7">
+        <section className="grid gap-8 xl:grid-cols-[1.25fr_0.75fr]">
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
             <div className="space-y-1">
-              <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-                Compose
-              </p>
-              <h2 className="text-2xl font-black text-slate-900">Write Message</h2>
+              <p className="font-mono-caps text-[11px] text-[#949494]">COMPOSE</p>
+              <h2 className="font-display text-[40px] uppercase text-white leading-[0.9]">WRITE MESSAGE</h2>
             </div>
 
             <label
               htmlFor="anonymous-message"
-              className="mt-5 block text-sm font-semibold text-slate-800"
+              className="mt-8 block font-mono-caps text-[11px] text-[#949494]"
             >
-              Your Anonymous Message
+              YOUR ANONYMOUS MESSAGE
             </label>
             <textarea
               id="anonymous-message"
               ref={textAreaRef}
               value={messageContent}
               onChange={(event) => setMessageContent(event.target.value)}
-              placeholder="Write your anonymous message here..."
+              placeholder="WRITE YOUR ANONYMOUS MESSAGE HERE..."
               aria-label="Write anonymous message"
-              className="mt-2 min-h-56 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 shadow-inner outline-none transition-colors duration-200 focus:border-slate-500 sm:text-base"
+              className="mt-2 min-h-56 w-full rounded-[2px] border border-[#313131] bg-[#131313] px-4 py-3 font-sans text-[16px] text-white placeholder-[#313131] outline-none transition-colors duration-150 focus:border-[#3cffd0] focus:ring-0"
             />
 
-            <div className="mt-3 flex items-center justify-between text-xs sm:text-sm">
-              <span className="text-slate-500">Minimum 10 and maximum 300 characters</span>
-              <span className={`${trimmedLength > 300 ? 'text-red-600' : 'text-slate-600'}`}>
+            <div className="mt-3 flex items-center justify-between font-mono-caps text-[10px]">
+              <span className="text-[#949494]">MINIMUM 10 AND MAXIMUM 300 CHARACTERS</span>
+              <span className={`${trimmedLength > 300 ? 'text-[#5200ff]' : 'text-[#949494]'}`}>
                 {trimmedLength}/300
               </span>
             </div>
@@ -176,71 +165,77 @@ function Page() {
               type="button"
               onClick={handleSendMessage}
               disabled={isSending}
-              className="mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
+              className={`mt-6 flex items-center justify-center gap-2 whitespace-nowrap px-6 h-11 transition-colors ${
+                isSending
+                  ? "border border-[#313131] rounded-[24px] text-[#949494] font-mono-caps text-[11px] cursor-not-allowed bg-transparent"
+                  : "jelly-mint-pill"
+              }`}
             >
               {isSending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Send className="h-4 w-4" />
               )}
-              Send Message
+              {isSending ? 'SENDING...' : 'SEND MESSAGE'}
             </button>
 
             {sendStatus && (
-              <p className={`mt-3 text-sm font-semibold ${sendStatus.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>
+              <p className={`mt-4 font-mono-caps text-[11px] ${sendStatus.type === 'success' ? 'text-[#3cffd0]' : 'text-[#5200ff]'}`}>
                 {sendStatus.text}
               </p>
             )}
           </div>
 
-          <div className="rounded-3xl border border-slate-300/70 bg-white/90 p-6 shadow-[0_18px_55px_-34px_rgba(15,23,42,0.4)] backdrop-blur-sm sm:p-7">
-            <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
-              Smart Writing Help
-            </p>
-            <h2 className="mt-1 text-2xl font-black text-slate-900">Message Suggestions</h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Click Suggest Message to generate ideas. Tap any suggestion to auto-fill your message box.
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[11px] text-[#949494]">SMART WRITING HELP</p>
+            <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">MESSAGE SUGGESTIONS</h2>
+            <p className="mt-4 font-mono-caps text-[11px] text-[#949494] leading-relaxed">
+              CLICK SUGGEST MESSAGE TO GENERATE IDEAS. TAP ANY SUGGESTION TO AUTO-FILL YOUR MESSAGE BOX.
             </p>
 
             <button
               type="button"
               onClick={handleSuggestMessages}
               disabled={isSuggesting}
-              className="mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 text-sm font-bold text-slate-800 transition-colors duration-200 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-70"
+              className={`mt-6 flex items-center justify-center gap-2 whitespace-nowrap px-6 h-11 transition-colors ${
+                isSuggesting
+                  ? "border border-[#313131] rounded-[24px] text-[#949494] font-mono-caps text-[11px] cursor-not-allowed bg-transparent"
+                  : "dark-slate-pill"
+              }`}
             >
               {isSuggesting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Sparkles className="h-4 w-4" />
               )}
-              Suggest Message
+              {isSuggesting ? 'SUGGESTING...' : 'SUGGEST MESSAGE'}
             </button>
 
             {suggestionStatus && (
-              <p className="mt-3 text-sm text-slate-600">{suggestionStatus}</p>
+              <p className="mt-4 font-mono-caps text-[10px] text-[#949494]">{suggestionStatus.toUpperCase()}</p>
             )}
 
             {suggestions.length > 0 ? (
-              <div className="mt-4 flex flex-col gap-3">
+              <div className="mt-6 flex flex-col gap-3">
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={`${suggestion}-${index}`}
                     type="button"
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-sm"
+                    className="w-full rounded-[2px] border border-[#313131] bg-[#131313] px-4 py-3 text-left transition-colors duration-150 hover:border-[#3cffd0] group"
                   >
-                    <p className="text-xs font-bold tracking-[0.12em] text-slate-500 uppercase">
-                      Suggestion {index + 1}
+                    <p className="font-mono-caps text-[10px] text-[#3cffd0] group-hover:text-white transition-colors">
+                      SUGGESTION {index + 1}
                     </p>
-                    <p className="mt-1 text-sm font-medium leading-relaxed text-slate-700">
+                    <p className="mt-2 font-sans text-[14px] text-white leading-relaxed">
                       {suggestion}
                     </p>
                   </button>
                 ))}
               </div>
             ) : (
-              <div className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-500">
-                Suggestions will appear here in a vertical list.
+              <div className="mt-6 rounded-[2px] border border-dashed border-[#313131] bg-[#131313] px-4 py-6 font-mono-caps text-[11px] text-[#949494] text-center">
+                SUGGESTIONS WILL APPEAR HERE IN A VERTICAL LIST.
               </div>
             )}
           </div>

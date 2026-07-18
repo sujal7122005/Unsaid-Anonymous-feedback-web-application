@@ -46,59 +46,50 @@ const messageChecklist = [
 
 export default function ContactPage() {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 px-4 py-8 sm:px-6 lg:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-8 top-16 h-48 w-48 rounded-full bg-cyan-200/30 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-0 top-32 h-44 w-44 rounded-full bg-amber-200/35 blur-3xl"
-      />
-
-      <main className="relative mx-auto max-w-6xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] px-4 py-12 sm:px-6 lg:px-10">
+      <main className="relative mx-auto max-w-6xl space-y-12">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8 lg:p-10">
+          <div className="inline-flex items-center gap-2 rounded-[2px] border border-[#3cffd0] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
             <Mail className="h-3.5 w-3.5" />
-            Contact Us
+            CONTACT US
           </div>
 
-          <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            Reach out whenever you need support.
+          <h1 className="mt-6 font-display text-[60px] sm:text-[80px] uppercase text-white leading-[0.9]">
+            REACH OUT WHENEVER YOU NEED SUPPORT.
           </h1>
 
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-6 max-w-3xl font-sans text-[18px] leading-relaxed text-white">
             Whether you have a question, found a bug, or want to share ideas, we are happy to hear from you.
             Clear communication helps us make Unsaid more reliable and more useful for everyone.
           </p>
 
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 sm:text-sm">
+          <div className="mt-8 inline-flex items-center gap-2 font-mono-caps text-[12px] text-[#3cffd0]">
             <Clock3 className="h-4 w-4" />
-            Typical response time: 24 to 48 hours.
+            TYPICAL RESPONSE TIME: 24 TO 48 HOURS.
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Contact channels</p>
-          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">Choose the right support route</h2>
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+          <p className="font-mono-caps text-[12px] text-[#949494]">CONTACT CHANNELS</p>
+          <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">CHOOSE THE RIGHT SUPPORT ROUTE</h2>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
             {contactChannels.map((channel) => {
               const Icon = channel.icon;
 
               return (
                 <article
                   key={channel.title}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
+                  className="rounded-[2px] border border-[#313131] bg-[#131313] p-6 transition-colors duration-200 hover:border-[#3cffd0] group flex flex-col"
                 >
-                  <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-                    <Icon className="h-4 w-4" />
+                  <div className="inline-flex text-[#3cffd0]">
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="mt-3 text-base font-extrabold text-slate-900">{channel.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{channel.description}</p>
+                  <h3 className="mt-4 font-display text-[24px] uppercase text-white">{channel.title}</h3>
+                  <p className="mt-3 font-sans text-[14px] leading-relaxed text-[#949494] group-hover:text-white transition-colors flex-grow">{channel.description}</p>
                   <a
                     href={channel.actionHref}
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition-colors duration-200 hover:text-black"
+                    className="mt-6 inline-flex items-center gap-2 font-mono-caps text-[11px] text-[#3cffd0] hover:text-white transition-colors uppercase"
                   >
                     {channel.actionLabel}
                     <ArrowRight className="h-4 w-4" />
@@ -109,16 +100,16 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-          <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Before you send</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">Include these details for faster help</h2>
+        <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+          <div className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[12px] text-[#949494]">BEFORE YOU SEND</p>
+            <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">INCLUDE THESE DETAILS FOR FASTER HELP</h2>
 
-            <div className="mt-5 space-y-3">
+            <div className="mt-8 space-y-3">
               {messageChecklist.map((item) => (
                 <div
                   key={item}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
+                  className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4 font-sans text-[16px] text-white"
                 >
                   {item}
                 </div>
@@ -126,20 +117,20 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-              <ShieldCheck className="h-4 w-4" />
+          <aside className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <div className="inline-flex text-[#3cffd0]">
+              <ShieldCheck className="h-6 w-6" />
             </div>
-            <h3 className="mt-3 text-lg font-extrabold text-slate-900">Privacy note</h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            <h3 className="mt-4 font-display text-[30px] uppercase text-white leading-[0.9]">PRIVACY NOTE</h3>
+            <p className="mt-4 font-sans text-[16px] leading-relaxed text-[#949494]">
               Never share passwords or OTP codes in support emails. We only need details required to understand and resolve your request.
             </p>
 
             <Link
               href="/about"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-md"
+              className="mt-8 dark-slate-pill h-12 px-6 flex flex-wrap items-center justify-center gap-2"
             >
-              Learn more about Unsaid
+              LEARN MORE ABOUT UNSAID
               <ArrowRight className="h-4 w-4" />
             </Link>
           </aside>

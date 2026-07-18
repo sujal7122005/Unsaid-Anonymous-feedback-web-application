@@ -74,34 +74,28 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-linear-to-br from-white via-gray-50 to-gray-200 flex items-center justify-center px-4 overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-black/5 blur-3xl animate-[fadeSoft_7s_ease-in-out_infinite]" />
-        <div className="absolute -right-16 top-10 h-64 w-64 rounded-full bg-black/8 blur-3xl animate-[fadeSoft_9s_ease-in-out_infinite]" />
-      </div>
-
-      <div className="relative w-full max-w-md animate-[fadeIn_0.5s_ease-out] drop-shadow-[0_30px_80px_-50px_rgba(0,0,0,0.55)]">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] flex items-center justify-center px-4 py-12">
+      <div className="relative w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-10 space-y-2">
-          <h1 className="text-4xl font-black text-black tracking-tight">
-            Welcome Back
+        <div className="mb-10 space-y-4 text-center flex flex-col items-center">
+          <h1 className="font-display text-[40px] sm:text-[50px] leading-[0.9] text-white uppercase">
+            WELCOME BACK
           </h1>
-          <p className="text-base text-gray-600 font-medium">
-            Sign in to your Unsaid account
+          <p className="font-mono-caps text-[12px] text-[#949494]">
+            SIGN IN TO YOUR UNSAID ACCOUNT
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="relative border border-gray-200 rounded-3xl p-8 shadow-xl bg-white/90 backdrop-blur-sm animate-[slideUp_0.4s_ease-out]">
-          <div className="pointer-events-none absolute inset-0 rounded-3xl border border-white/60" />
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="relative border border-[#ffffff] rounded-[20px] p-8 bg-[#131313]">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
-            <div className="group">
+            <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider"
+                className="block font-mono-caps text-[11px] text-[#949494] mb-2"
               >
-                Email
+                EMAIL
               </label>
               <input
                 id="email"
@@ -116,21 +110,25 @@ export default function LoginPage() {
                     validateField("email", value);
                   }
                 }}
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black"
+                placeholder="YOU@EXAMPLE.COM"
+                className={`w-full px-4 py-3 border rounded-[2px] bg-[#131313] text-white text-[16px] font-sans placeholder-[#313131] outline-none transition-colors duration-150 focus:ring-0 ${
+                  errors.email
+                    ? "border-[#5200ff] focus:border-[#5200ff]"
+                    : "border-[#313131] focus:border-[#3cffd0]"
+                }`}
               />
               {errors.email && (
-                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.email}</p>
+                <p className="mt-2 font-mono-caps text-[11px] text-[#5200ff]">{errors.email}</p>
               )}
             </div>
 
             {/* Password */}
-            <div className="group">
+            <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-800 mb-1.5 uppercase tracking-wider"
+                className="block font-mono-caps text-[11px] text-[#949494] mb-2"
               >
-                Password
+                PASSWORD
               </label>
               <div className="relative">
                 <input
@@ -147,21 +145,25 @@ export default function LoginPage() {
                     }
                   }}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-black text-lg font-semibold placeholder-gray-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-gray-900/30 focus:border-black pr-12"
+                  className={`w-full px-4 py-3 border rounded-[2px] bg-[#131313] text-white text-[16px] font-sans placeholder-[#313131] outline-none transition-colors duration-150 focus:ring-0 pr-12 ${
+                    errors.password
+                      ? "border-[#5200ff] focus:border-[#5200ff]"
+                      : "border-[#313131] focus:border-[#3cffd0]"
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors duration-200"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#949494] hover:text-[#3cffd0] transition-colors duration-150"
                 >
                   {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
                       <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
                     </svg>
@@ -169,33 +171,33 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1.5 text-sm text-red-500 font-medium">{errors.password}</p>
+                <p className="mt-2 font-mono-caps text-[11px] text-[#5200ff]">{errors.password}</p>
               )}
             </div>
 
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-base font-semibold rounded-xl hover:-translate-y-px hover:shadow-[0_12px_30px_-18px_rgba(0,0,0,0.85)] transition-all duration-200 cursor-pointer"
+              className="w-full jelly-mint-pill mt-4 flex items-center justify-center gap-2"
             >
-              Sign In
+              SIGN IN
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center my-6">
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent" />
-            <span className="px-4 text-xs text-gray-500 font-semibold uppercase tracking-[0.3em]">or</span>
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent" />
+          <div className="flex items-center my-8">
+            <div className="flex-1 h-px bg-[#313131]" />
+            <span className="px-4 font-mono-caps text-[11px] text-[#949494]">OR</span>
+            <div className="flex-1 h-px bg-[#313131]" />
           </div>
 
           {/* Google Sign In Button */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full py-3 border border-gray-200 rounded-xl flex items-center justify-center gap-3 text-base font-semibold text-black bg-white transition-all duration-200 hover:-translate-y-px hover:shadow-[0_10px_28px_-20px_rgba(0,0,0,0.65)] cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 border border-[#ffffff] rounded-[24px] px-6 py-2.5 bg-transparent font-mono-caps text-[12px] text-white hover:bg-[#ffffff] hover:text-black transition-colors duration-150"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24">
+            <svg width="14" height="14" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
                 fill="#4285F4"
@@ -213,34 +215,21 @@ export default function LoginPage() {
                 fill="#EA4335"
               />
             </svg>
-            Sign in with Google
+            SIGN IN WITH GOOGLE
           </button>
         </div>
 
         {/* Footer Link */}
-        <p className="text-center text-base text-gray-600 font-medium mt-8 animate-[fadeIn_0.6s_ease-out]">
-          Don&apos;t have an account?{" "}
+        <p className="text-center font-sans-thin-caps text-[14px] text-[#949494] mt-8">
+          DON'T HAVE AN ACCOUNT?{" "}
           <Link
             href="/signup"
-            className="text-black font-semibold hover:underline underline-offset-4 transition-all duration-200"
+            className="text-[#ffffff] verge-link"
           >
-            Sign Up
+            SIGN UP
           </Link>
         </p>
       </div>
-
-      {/* Keyframe Animations */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeSoft { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.05); } }
-      `}</style>
     </div>
   );
 }

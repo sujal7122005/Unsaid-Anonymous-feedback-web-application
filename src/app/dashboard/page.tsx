@@ -355,134 +355,127 @@ function DashboardPage() {
   }
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] bg-[#f2f5f9] py-8 sm:py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-12 -left-16 h-64 w-64 rounded-full bg-cyan-100/75 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-24 -right-20 h-72 w-72 rounded-full bg-indigo-100/70 blur-3xl"
-      />
-
-      <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-10">
-        <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.35)] backdrop-blur-sm sm:p-8">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] py-12">
+      <div className="mx-auto max-w-7xl space-y-12 px-4 sm:px-6 lg:px-10">
+        
+        {/* Workspace Overview */}
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.14em] text-slate-600 uppercase">
+              <p className="inline-flex items-center gap-2 rounded-[2px] border border-[#313131] bg-[#131313] px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
                 <Sparkles className="h-3.5 w-3.5" />
-                Workspace Overview
+                WORKSPACE OVERVIEW
               </p>
-              <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-                {session.user.name} Dashboard
+              <h1 className="mt-4 font-display text-[60px] sm:text-[70px] uppercase text-white leading-[0.9]">
+                {session.user.name} DASHBOARD
               </h1>
-              <p className="mt-2 max-w-2xl text-sm text-slate-600 sm:text-base">
-                Manage your profile link, control anonymous message intake, and organize product-specific inboxes in one professional workspace.
+              <p className="mt-2 max-w-2xl font-mono-caps text-[12px] text-[#949494] leading-relaxed">
+                MANAGE YOUR PROFILE LINK, CONTROL ANONYMOUS MESSAGE INTAKE, AND ORGANIZE PRODUCT-SPECIFIC INBOXES IN ONE PROFESSIONAL WORKSPACE.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase">Total Inboxes</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">{totalInboxes}</p>
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-4 py-3">
+                <p className="font-mono-caps text-[10px] text-[#949494]">TOTAL INBOXES</p>
+                <p className="mt-1 font-display text-[30px] text-white leading-none">{totalInboxes}</p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase">Custom Links</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-4 py-3">
+                <p className="font-mono-caps text-[10px] text-[#949494]">CUSTOM LINKS</p>
+                <p className="mt-1 font-display text-[30px] text-white leading-none">
                   {customLinks.length}/{MAX_CUSTOM_LINKS}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-xs font-semibold tracking-[0.12em] text-slate-500 uppercase">Message Mode</p>
-                <p className="mt-1 text-2xl font-black text-slate-900">
-                  {acceptMessages ? 'On' : 'Off'}
+              <div className="rounded-[2px] border border-[#313131] bg-[#131313] px-4 py-3">
+                <p className="font-mono-caps text-[10px] text-[#949494]">MESSAGE MODE</p>
+                <p className="mt-1 font-display text-[30px] text-[#3cffd0] leading-none">
+                  {acceptMessages ? 'ON' : 'OFF'}
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-          <article className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+        <section className="grid gap-8 xl:grid-cols-[1.25fr_0.75fr]">
+          <article className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">General Link</p>
-                <h2 className="mt-1 text-xl font-black text-slate-900">Public Profile URL</h2>
+                <p className="font-mono-caps text-[11px] text-[#949494]">GENERAL LINK</p>
+                <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">PUBLIC PROFILE URL</h2>
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+              <span className="inline-flex items-center gap-1 rounded-[2px] border border-[#3cffd0] bg-transparent px-2.5 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Active
+                ACTIVE
               </span>
             </div>
 
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <input
                 value={profileUrl}
                 disabled
-                className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700"
+                className="h-11 w-full rounded-[2px] border border-[#313131] bg-[#131313] px-3 font-mono-caps text-[12px] text-[#949494]"
               />
-              <Button
-                className="h-11 px-4"
+              <button
+                className="dark-slate-pill h-11 px-6 whitespace-nowrap flex items-center justify-center gap-2"
                 onClick={() => copyToClipboard(profileUrl, 'General link copied!')}
               >
                 <Copy className="h-4 w-4" />
-                Copy Link
-              </Button>
+                COPY LINK
+              </button>
             </div>
           </article>
 
-          <article className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
-            <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Message Mode</p>
-            <h2 className="mt-1 text-xl font-black text-slate-900">Anonymous Intake</h2>
+          <article className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[11px] text-[#949494]">MESSAGE MODE</p>
+            <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">ANONYMOUS INTAKE</h2>
 
-            <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mt-6 flex items-center justify-between rounded-[2px] border border-[#313131] bg-[#131313] p-4">
               <div>
-                <p className="text-sm font-bold text-slate-900">Accept Anonymous Messages</p>
-                <p className="text-xs text-slate-600">
-                  {acceptMessages ? 'Your inbox is open to new anonymous messages.' : 'Your inbox is paused for new anonymous messages.'}
+                <p className="font-mono-caps text-[12px] text-white">ACCEPT ANONYMOUS MESSAGES</p>
+                <p className="font-sans text-[12px] text-[#949494] mt-1">
+                  {acceptMessages ? 'Your inbox is open to new messages.' : 'Your inbox is paused.'}
                 </p>
               </div>
               <Switch
                 checked={acceptMessages}
                 onCheckedChange={handleSwitchChange}
                 disabled={isSwitchLoading}
+                className="data-[state=checked]:bg-[#3cffd0]"
               />
             </div>
           </article>
         </section>
 
-        <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Public JSON Feed</p>
-              <h2 className="mt-1 text-2xl font-black text-slate-900">Embeddable Messages Endpoint</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                Use this link to fetch your latest 10 anonymous messages for external websites.
+              <p className="font-mono-caps text-[11px] text-[#949494]">PUBLIC JSON FEED</p>
+              <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">EMBEDDABLE MESSAGES ENDPOINT</h2>
+              <p className="mt-1 font-mono-caps text-[11px] text-[#949494]">
+                USE THIS LINK TO FETCH YOUR LATEST 10 ANONYMOUS MESSAGES FOR EXTERNAL WEBSITES.
               </p>
             </div>
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
-              Rate limited
+            <span className="rounded-[2px] border border-[#313131] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#949494]">
+              RATE LIMITED
             </span>
           </div>
 
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <input
-              value={isPublicFeedLoading ? 'Loading...' : publicFeedUrl}
+              value={isPublicFeedLoading ? 'LOADING...' : publicFeedUrl}
               disabled
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700"
+              className="h-11 w-full rounded-[2px] border border-[#313131] bg-[#131313] px-3 font-mono-caps text-[12px] text-[#949494]"
             />
-            <Button
-              className="h-11 px-4"
+            <button
+              className="dark-slate-pill h-11 px-6 flex items-center justify-center gap-2 whitespace-nowrap"
               onClick={() => copyToClipboard(publicFeedUrl, 'Public feed link copied!')}
               disabled={isPublicFeedLoading}
             >
               <Copy className="h-4 w-4" />
-              Copy Feed Link
-            </Button>
-            <Button
+              COPY FEED LINK
+            </button>
+            <button
               type="button"
-              variant="outline"
-              className="h-11 border-slate-300 bg-white px-4 text-slate-700 hover:bg-slate-100"
+              className="h-11 border border-[#ffffff] rounded-[24px] bg-transparent px-6 font-mono-caps text-[11px] text-white hover:bg-[#ffffff] hover:text-black flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
               onClick={handleRegeneratePublicFeedToken}
               disabled={isPublicFeedRegenerating}
             >
@@ -491,96 +484,98 @@ function DashboardPage() {
               ) : (
                 <RefreshCcw className="h-4 w-4" />
               )}
-              Regenerate
-            </Button>
+              REGENERATE
+            </button>
           </div>
 
-          <p className="mt-3 text-xs text-slate-600">
-            Keep this link private. Regenerating the token will disable the previous link.
+          <p className="mt-3 font-mono-caps text-[10px] text-[#5200ff]">
+            KEEP THIS LINK PRIVATE. REGENERATING THE TOKEN WILL DISABLE THE PREVIOUS LINK.
           </p>
         </section>
 
-        <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Custom Links</p>
-              <h2 className="mt-1 text-2xl font-black text-slate-900">Product-specific Inboxes</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                Create targeted links to collect feedback for specific products, launches, or campaigns.
+              <p className="font-mono-caps text-[11px] text-[#949494]">CUSTOM LINKS</p>
+              <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">PRODUCT-SPECIFIC INBOXES</h2>
+              <p className="mt-1 font-mono-caps text-[11px] text-[#949494]">
+                CREATE TARGETED LINKS TO COLLECT FEEDBACK FOR SPECIFIC PRODUCTS, LAUNCHES, OR CAMPAIGNS.
               </p>
             </div>
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
-              {customLinks.length}/{MAX_CUSTOM_LINKS} used • {customLinksRemaining} left
+            <span className="rounded-[2px] border border-[#313131] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#949494]">
+              {customLinks.length}/{MAX_CUSTOM_LINKS} USED • {customLinksRemaining} LEFT
             </span>
           </div>
 
-          <form onSubmit={handleCreateCustomLink} className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
+          <form onSubmit={handleCreateCustomLink} className="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
             <input
               value={customProductName}
               onChange={(event) => setCustomProductName(event.target.value)}
-              placeholder="e.g. Portfolio Website, SaaS Beta, Resume"
-              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700"
+              placeholder="E.G. PORTFOLIO WEBSITE, SAAS BETA, RESUME"
+              className="h-11 w-full rounded-[2px] border border-[#313131] bg-[#131313] px-3 font-mono-caps text-[12px] text-white placeholder-[#313131] focus:border-[#3cffd0] focus:ring-0 outline-none transition-colors"
             />
-            <Button
+            <button
               type="submit"
-              className="h-11 px-4"
+              className={`h-11 px-6 flex items-center justify-center gap-2 whitespace-nowrap transition-colors ${
+                isCreateLinkLoading || customLinks.length >= MAX_CUSTOM_LINKS
+                  ? "border border-[#313131] rounded-[24px] text-[#949494] font-mono-caps text-[11px] cursor-not-allowed bg-transparent"
+                  : "jelly-mint-pill"
+              }`}
               disabled={isCreateLinkLoading || customLinks.length >= MAX_CUSTOM_LINKS}
             >
               {isCreateLinkLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Create Link
-            </Button>
+              CREATE LINK
+            </button>
           </form>
 
           {isCustomLinksLoading ? (
-            <p className="mt-4 text-sm text-slate-600">Loading custom links...</p>
+            <p className="mt-4 font-mono-caps text-[11px] text-[#949494]">LOADING CUSTOM LINKS...</p>
           ) : customLinks.length > 0 ? (
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
               {customLinks.map((link) => {
                 const customUrl = `${baseUrl}/u/${encodedUsername}/p/${encodeURIComponent(link.slug)}`
 
                 return (
-                  <article key={link.id} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+                  <article key={link.id} className="rounded-[2px] border border-[#313131] bg-[#131313] p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-base font-black text-slate-900">{link.productName}</p>
-                        <p className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-slate-600">
+                        <p className="font-display text-[24px] uppercase text-white leading-none">{link.productName}</p>
+                        <p className="mt-2 inline-flex items-center gap-1 font-mono-caps text-[10px] text-[#949494]">
                           <Link2 className="h-3.5 w-3.5" />
-                          /p/{link.slug}
+                          /P/{link.slug.toUpperCase()}
                         </p>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => setActiveInbox(link.id)}
-                        className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                        className={`inline-flex items-center gap-1 rounded-[24px] border px-3 py-1 font-mono-caps text-[10px] transition-colors ${
                           activeInbox === link.id
-                            ? 'border-slate-900 bg-slate-900 text-white'
-                            : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                            ? 'border-[#3cffd0] bg-[#3cffd0] text-black'
+                            : 'border-[#ffffff] bg-transparent text-white hover:bg-[#ffffff] hover:text-black'
                         }`}
                       >
-                        {activeInbox === link.id ? 'Active Inbox' : 'Open Inbox'}
+                        {activeInbox === link.id ? 'ACTIVE INBOX' : 'OPEN INBOX'}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </button>
                     </div>
 
-                    <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                    <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                       <input
                         value={customUrl}
                         disabled
-                        className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-700"
+                        className="h-10 w-full rounded-[2px] border border-[#313131] bg-[#131313] px-3 font-mono-caps text-[10px] text-[#949494]"
                       />
-                      <Button
+                      <button
                         type="button"
-                        variant="outline"
-                        className="h-10 border-slate-300 bg-white px-3 text-slate-700 hover:bg-slate-100"
+                        className="h-10 border border-[#ffffff] rounded-[24px] bg-transparent px-4 font-mono-caps text-[10px] text-white hover:bg-[#ffffff] hover:text-black flex items-center justify-center transition-colors"
                         onClick={() => copyToClipboard(customUrl, `${link.productName} link copied!`)}
                       >
                         <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         type="button"
-                        variant="destructive"
-                        className="h-10 px-3"
+                        className="h-10 rounded-[24px] bg-[#5200ff] px-4 text-white hover:bg-[#5200ff]/80 flex items-center justify-center transition-colors disabled:opacity-50"
                         onClick={() => handleDeleteCustomLink(link)}
                         disabled={deletingLinkId === link.id}
                       >
@@ -589,72 +584,71 @@ function DashboardPage() {
                         ) : (
                           <Trash2 className="h-4 w-4" />
                         )}
-                      </Button>
+                      </button>
                     </div>
                   </article>
                 )
               })}
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
-              No custom links created yet. Create your first product link to start collecting focused feedback.
+            <div className="mt-6 rounded-[2px] border border-dashed border-[#313131] bg-[#131313] p-5 font-mono-caps text-[11px] text-[#949494] text-center">
+              NO CUSTOM LINKS CREATED YET. CREATE YOUR FIRST PRODUCT LINK TO START COLLECTING FOCUSED FEEDBACK.
             </div>
           )}
         </section>
 
-        <section className="rounded-3xl border border-slate-200/90 bg-white/90 p-6 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Inbox</p>
-              <h2 className="mt-1 text-2xl font-black text-slate-900">{inboxTitle}</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                {isLoading ? 'Refreshing messages...' : `${messages.length} message${messages.length === 1 ? '' : 's'} currently visible`}
+              <p className="font-mono-caps text-[11px] text-[#949494]">INBOX</p>
+              <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">{inboxTitle}</h2>
+              <p className="mt-1 font-mono-caps text-[11px] text-[#949494]">
+                {isLoading ? 'REFRESHING MESSAGES...' : `${messages.length} MESSAGE${messages.length === 1 ? '' : 'S'} CURRENTLY VISIBLE`}
               </p>
             </div>
-            <Button
-              variant="outline"
-              className="h-10"
+            <button
+              className="h-10 border border-[#ffffff] rounded-[24px] bg-transparent px-6 font-mono-caps text-[11px] text-white hover:bg-[#ffffff] hover:text-black flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
               onClick={() => fetchMessages(true, activeInbox)}
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
-              Refresh
-            </Button>
+              REFRESH
+            </button>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setActiveInbox('general')}
-              className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`inline-flex items-center gap-1 rounded-[24px] border px-4 py-1.5 font-mono-caps text-[11px] transition-colors ${
                 activeInbox === 'general'
-                  ? 'border-slate-900 bg-slate-900 text-white'
-                  : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                  ? 'border-[#3cffd0] bg-[#3cffd0] text-black'
+                  : 'border-[#ffffff] bg-transparent text-white hover:bg-[#ffffff] hover:text-black'
               }`}
             >
               <Inbox className="h-3.5 w-3.5" />
-              General
+              GENERAL
             </button>
             {customLinks.map((link) => (
               <button
                 key={link.id}
                 type="button"
                 onClick={() => setActiveInbox(link.id)}
-                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                className={`inline-flex items-center gap-1 rounded-[24px] border px-4 py-1.5 font-mono-caps text-[11px] transition-colors ${
                   activeInbox === link.id
-                    ? 'border-slate-900 bg-slate-900 text-white'
-                    : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                    ? 'border-[#3cffd0] bg-[#3cffd0] text-black'
+                    : 'border-[#ffffff] bg-transparent text-white hover:bg-[#ffffff] hover:text-black'
                 }`}
               >
                 <Link2 className="h-3.5 w-3.5" />
-                {link.productName}
+                {link.productName.toUpperCase()}
               </button>
             ))}
           </div>
 
-          <Separator className="my-5 bg-slate-200" />
+          <div className="my-8 h-px w-full bg-[#313131]" />
 
           {isLoading ? (
-            <p className="text-sm text-slate-600">Loading messages...</p>
+            <p className="font-mono-caps text-[11px] text-[#949494]">LOADING MESSAGES...</p>
           ) : messages.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {messages.map((message, index) => (
@@ -666,8 +660,8 @@ function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
-              No messages in this inbox yet. Share your link to start receiving anonymous feedback.
+            <div className="rounded-[2px] border border-dashed border-[#313131] bg-[#131313] p-8 font-mono-caps text-[11px] text-[#949494] text-center">
+              NO MESSAGES IN THIS INBOX YET. SHARE YOUR LINK TO START RECEIVING ANONYMOUS FEEDBACK.
             </div>
           )}
         </section>

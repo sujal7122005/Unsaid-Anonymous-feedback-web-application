@@ -36,12 +36,18 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          forcedTheme="dark"
           disableTransitionOnChange
         >
           <NavBar />
-          <Toaster position="top-center" />
+          <Toaster position="top-center" toastOptions={{
+            style: {
+              background: '#1a1a1a',
+              color: '#fff',
+              border: '1px solid rgba(255,255,255,0.1)',
+            }
+          }} />
           {children}
         </ThemeProvider>
       </body>

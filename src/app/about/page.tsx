@@ -37,91 +37,82 @@ const trustPoints = [
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-linear-to-b from-slate-50 via-zinc-50 to-slate-100 px-4 py-8 sm:px-6 lg:px-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 left-8 h-52 w-52 rounded-full bg-cyan-200/35 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-8 right-4 h-52 w-52 rounded-full bg-amber-200/35 blur-3xl"
-      />
-
-      <main className="relative mx-auto max-w-6xl space-y-6">
-        <section className="animate-in fade-in-0 slide-in-from-top-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] px-4 py-12 sm:px-6 lg:px-10">
+      <main className="relative mx-auto max-w-6xl space-y-12">
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8 lg:p-10">
+          <div className="inline-flex items-center gap-2 rounded-[2px] border border-[#3cffd0] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0]">
             <Users2 className="h-3.5 w-3.5" />
-            About Unsaid
+            ABOUT UNSAID
           </div>
 
-          <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            We built Unsaid to make honest feedback easier to share.
+          <h1 className="mt-6 font-display text-[60px] sm:text-[80px] uppercase text-white leading-[0.9]">
+            WE BUILT UNSAID TO MAKE HONEST FEEDBACK EASIER TO SHARE.
           </h1>
 
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-6 max-w-3xl font-sans text-[18px] leading-relaxed text-white">
             Great feedback often stays unsaid because people fear judgment or awkward conversations.
             Unsaid creates a safe channel where real thoughts can be shared anonymously, while recipients
             stay in control through privacy settings and a structured inbox.
           </p>
 
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 sm:text-sm">
+          <div className="mt-8 inline-flex items-center gap-2 font-mono-caps text-[12px] text-[#3cffd0]">
             <BadgeCheck className="h-4 w-4" />
-            Trusted by people who value clarity, growth, and privacy.
+            TRUSTED BY PEOPLE WHO VALUE CLARITY, GROWTH, AND PRIVACY.
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-3 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">What we stand for</p>
-          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">Principles behind the product</h2>
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+          <p className="font-mono-caps text-[12px] text-[#949494]">WHAT WE STAND FOR</p>
+          <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">PRINCIPLES BEHIND THE PRODUCT</h2>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
             {values.map((value) => {
               const Icon = value.icon;
 
               return (
                 <article
                   key={value.title}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
+                  className="rounded-[2px] border border-[#313131] bg-[#131313] p-6 transition-colors duration-200 hover:border-[#3cffd0] group"
                 >
-                  <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-                    <Icon className="h-4 w-4" />
+                  <div className="inline-flex text-[#3cffd0]">
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="mt-3 text-base font-extrabold text-slate-900">{value.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{value.description}</p>
+                  <h3 className="mt-4 font-display text-[24px] uppercase text-white">{value.title}</h3>
+                  <p className="mt-3 font-sans text-[14px] leading-relaxed text-[#949494] group-hover:text-white transition-colors">{value.description}</p>
                 </article>
               );
             })}
           </div>
         </section>
 
-        <section className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-semibold tracking-[0.16em] text-slate-500 uppercase">Trust and safety</p>
-          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">How we protect user confidence</h2>
+        <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+          <p className="font-mono-caps text-[12px] text-[#949494]">TRUST AND SAFETY</p>
+          <h2 className="mt-2 font-display text-[40px] uppercase text-white leading-[0.9]">HOW WE PROTECT USER CONFIDENCE</h2>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {trustPoints.map((point) => (
               <div
                 key={point}
-                className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
+                className="rounded-[2px] border border-[#313131] bg-[#131313] px-5 py-4 font-sans text-[16px] text-white"
               >
                 {point}
               </div>
             ))}
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:-translate-y-px hover:bg-black hover:shadow-lg"
+              className="jelly-mint-pill h-12 px-6 flex items-center justify-center gap-2"
             >
-              Contact our team
+              CONTACT OUR TEAM
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition-all duration-300 hover:-translate-y-px hover:border-slate-300 hover:shadow-md"
+              className="dark-slate-pill h-12 px-6 flex items-center justify-center gap-2"
             >
-              Create your account
+              CREATE YOUR ACCOUNT
             </Link>
           </div>
         </section>

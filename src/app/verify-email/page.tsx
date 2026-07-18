@@ -98,20 +98,20 @@ function VerifyEmailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
-      <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out]">
+    <div className="relative min-h-[calc(100vh-80px)] bg-[#131313] flex items-center justify-center px-4 py-12">
+      <div className="relative w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-black tracking-tight">
-            Verify Email For Your UnSaid Account
+        <div className="mb-10 space-y-4 text-center flex flex-col items-center">
+          <h1 className="font-display text-[40px] sm:text-[50px] leading-[0.9] text-white uppercase">
+            VERIFY EMAIL
           </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Enter the 6-digit code sent to your email
+          <p className="font-mono-caps text-[12px] text-[#949494]">
+            ENTER THE 6-DIGIT CODE SENT TO YOUR EMAIL
           </p>
         </div>
 
         {/* Card */}
-        <div className="border border-gray-600 rounded-2xl p-8 shadow-sm animate-[slideUp_0.4s_ease-out]">
+        <div className="relative border border-[#ffffff] rounded-[20px] p-8 bg-[#131313]">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* OTP Inputs */}
             <div className="flex justify-center gap-3">
@@ -126,50 +126,42 @@ function VerifyEmailContent() {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={index === 0 ? handlePaste : undefined}
-                  className="w-12 h-14 text-center text-xl font-semibold text-black border border-gray-300 rounded-lg outline-none transition-all duration-200 focus:border-black focus:ring-1 focus:ring-black"
+                  className="w-12 h-14 text-center text-[24px] font-sans font-bold text-white border border-[#313131] bg-[#131313] rounded-[2px] outline-none transition-colors duration-150 focus:border-[#3cffd0] focus:ring-0"
                 />
               ))}
             </div>
 
             {errorText && (
-              <p className="text-center text-sm text-red-500">{errorText}</p>
+              <p className="text-center font-mono-caps text-[11px] text-[#5200ff]">{errorText}</p>
             )}
 
             {/* Verify Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full mt-4 flex items-center justify-center gap-2 ${
+                loading
+                  ? "border border-[#313131] bg-transparent text-[#949494] rounded-[24px] px-6 py-2.5 font-mono-caps text-xs font-semibold cursor-not-allowed"
+                  : "jelly-mint-pill cursor-pointer"
+              }`}
             >
-              {loading ? "Verifying..." : "Verify"}
+              {loading ? "VERIFYING..." : "VERIFY"}
             </button>
           </form>
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm text-gray-500 mt-8 animate-[fadeIn_0.6s_ease-out]">
-          Didn&apos;t receive the code?{" "}
+        <p className="text-center font-sans-thin-caps text-[14px] text-[#949494] mt-8">
+          DIDN'T RECEIVE THE CODE?{" "}
           <button
             type="button"
             onClick={handleResend}
-            className="text-black font-medium hover:underline underline-offset-4 transition-all duration-200 cursor-pointer"
+            className="text-[#ffffff] verge-link cursor-pointer uppercase"
           >
-            Resend
+            RESEND
           </button>
         </p>
       </div>
-
-      {/* Keyframe Animations */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -178,8 +170,8 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-white flex items-center justify-center px-4 border-t border-gray-200">
-          <p className="text-sm text-gray-500">Loading...</p>
+        <div className="min-h-[calc(100vh-80px)] bg-[#131313] flex items-center justify-center px-4">
+          <p className="font-mono-caps text-[12px] text-[#949494]">LOADING...</p>
         </div>
       }
     >

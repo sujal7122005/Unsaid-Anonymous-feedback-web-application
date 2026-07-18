@@ -3,145 +3,105 @@ import {
   Link2,
   LockKeyhole,
   MessageSquareText,
-  Sparkles,
   ToggleLeft,
   WandSparkles,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { DottedSurface } from "@/components/ui/dotted-surface";
 import MessageTimeCarousel from "../components/MessageTimeCarousel";
 import HomeHeroActions from "../components/HomeHeroActions";
 import HomeFooterAccountLinks from "../components/HomeFooterAccountLinks";
+import Logo from "../components/Logo";
 
 type HomeFeature = {
   title: string;
   description: string;
   detail: string;
   icon: LucideIcon;
-};
-
-type HomeStep = {
-  id: string;
-  title: string;
-  description: string;
+  color?: "mint" | "ultraviolet" | "yellow" | "pink" | "dark";
 };
 
 const features: HomeFeature[] = [
   {
-    title: "Honest Anonymous Feedback",
-    description:
-      "People can message you freely without revealing identity.",
-    detail:
-      "This creates space for real, useful opinions that are often left unsaid in normal conversations.",
+    title: "HONEST ANONYMOUS FEEDBACK",
+    description: "People can message you freely without revealing identity.",
+    detail: "This creates space for real, useful opinions that are often left unsaid in normal conversations.",
     icon: MessageSquareText,
+    color: "mint",
   },
   {
-    title: "OTP Secured Accounts",
-    description:
-      "Only verified users can manage inbox settings and message access.",
-    detail:
-      "Email OTP verification helps keep ownership secure while maintaining a frictionless experience.",
+    title: "OTP SECURED ACCOUNTS",
+    description: "Only verified users can manage inbox settings and message access.",
+    detail: "Email OTP verification helps keep ownership secure while maintaining a frictionless experience.",
     icon: LockKeyhole,
+    color: "dark",
   },
   {
-    title: "AI Suggestion Support",
-    description:
-      "Smart suggestions help senders write clear and thoughtful feedback.",
-    detail:
-      "Great when someone wants to say something valuable but struggles to phrase it.",
+    title: "AI SUGGESTION SUPPORT",
+    description: "Smart suggestions help senders write clear and thoughtful feedback.",
+    detail: "Great when someone wants to say something valuable but struggles to phrase it.",
     icon: WandSparkles,
+    color: "dark",
   },
   {
-    title: "Public Shareable Link",
-    description:
-      "Each user gets a personal feedback URL for easy sharing.",
-    detail:
-      "Post it on social media, portfolios, communities, or team channels to collect responses quickly.",
+    title: "PUBLIC SHAREABLE LINK",
+    description: "Each user gets a personal feedback URL for easy sharing.",
+    detail: "Post it on social media, portfolios, communities, or team channels to collect responses quickly.",
     icon: Link2,
+    color: "ultraviolet",
   },
   {
-    title: "Inbox Control Dashboard",
-    description:
-      "Manage incoming messages in one clean private dashboard.",
-    detail:
-      "Toggle acceptance mode on or off anytime and review all feedback in a structured way.",
+    title: "INBOX CONTROL DASHBOARD",
+    description: "Manage incoming messages in one clean private dashboard.",
+    detail: "Toggle acceptance mode on or off anytime and review all feedback in a structured way.",
     icon: ToggleLeft,
+    color: "dark",
   },
 ];
 
-const steps: HomeStep[] = [
-  {
-    id: "01",
-    title: "Sign up & verify",
-    description: "Create your account and verify your email with OTP.",
-  },
-  {
-    id: "02",
-    title: "Share your profile link",
-    description:
-      "Send your unique URL to audience, friends, or your team.",
-  },
-  {
-    id: "03",
-    title: "Receive and improve with feedback",
-    description:
-      "Read honest messages from your dashboard and use them to grow.",
-  },
-];
-
-function SectionHeader({
-  badge,
-  title,
-  description,
-}: {
-  badge: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="space-y-3">
-      <p className="text-xs font-semibold tracking-[0.16em] text-slate-500/90 uppercase transition-colors duration-300">
-        {badge}
-      </p>
-      <h2 className="text-2xl leading-tight font-black text-slate-900 sm:text-3xl md:text-4xl">
-        {title}
-      </h2>
-      <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function FeatureCard({ feature }: { feature: HomeFeature }) {
+function StreamCard({ feature, timestamp }: { feature: HomeFeature; timestamp: string }) {
   const Icon = feature.icon;
+  const isDark = feature.color === "dark";
+  const isMint = feature.color === "mint";
+  const isUV = feature.color === "ultraviolet";
+
+  let containerClass = "relative w-full rounded-[20px] p-6 sm:p-8 transition-colors duration-150 ";
+  if (isDark) containerClass += "bg-[#131313] border border-[#ffffff] text-white";
+  if (isMint) containerClass += "bg-[#3cffd0] border-none text-[#000000]";
+  if (isUV) containerClass += "bg-[#5200ff] border-none text-white";
+
+  let titleClass = "font-display text-[34px] leading-[0.9] mt-4 mb-2 ";
+  if (isDark) titleClass += "verge-link cursor-pointer";
+  if (isMint) titleClass += "verge-link cursor-pointer text-black";
+  if (isUV) titleClass += "text-white verge-link cursor-pointer";
 
   return (
-    <article className="group rounded-2xl border border-slate-200/80 bg-white/85 p-5 shadow-sm backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-xl motion-reduce:transition-none">
-      <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-700 transition-all duration-300 group-hover:scale-105 group-hover:bg-white group-hover:shadow-sm">
-        <Icon className="h-4 w-4 transition-transform duration-300 group-hover:-rotate-6" />
+    <div className="relative flex items-start gap-4 sm:gap-8 group">
+      {/* Timeline Rail & Timestamp */}
+      <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+        <div className="absolute top-0 bottom-[-40px] left-1/2 w-px bg-white border-l border-white" />
+        <div className="relative z-10 bg-[#131313] py-2 font-mono-caps text-[11px] text-[#949494] bg-clip-padding">
+          {timestamp}
+        </div>
       </div>
-      <h3 className="mt-3 text-base font-extrabold text-slate-900 transition-colors duration-300 group-hover:text-slate-950">
-        {feature.title}
-      </h3>
-      <p className="mt-2 text-sm font-medium text-slate-700">
-        {feature.description}
-      </p>
-      <p className="mt-2 text-sm text-slate-600">{feature.detail}</p>
-    </article>
-  );
-}
 
-function StepCard({ step }: { step: HomeStep }) {
-  return (
-    <article className="group rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg motion-reduce:transition-none">
-      <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-xs font-black text-slate-700 transition-all duration-300 group-hover:bg-white group-hover:shadow-sm">
-        {step.id}
-      </div>
-      <h3 className="mt-3 text-base font-extrabold text-slate-900">{step.title}</h3>
-      <p className="mt-1 text-sm text-slate-600">{step.description}</p>
-    </article>
+      {/* Card Body */}
+      <article className={containerClass}>
+        <div className="flex items-center gap-3">
+          <span className="font-sans-thin-caps text-[14px]">
+            {isMint ? "FEATURE HIGHLIGHT" : "CORE FUNCTION"}
+          </span>
+          <Icon className="h-4 w-4" />
+        </div>
+        <h3 className={titleClass}>{feature.title}</h3>
+        <p className={`text-[16px] font-bold ${isDark ? 'text-white' : 'text-inherit'} mb-2`}>
+          {feature.description}
+        </p>
+        <p className={`text-[13px] ${isDark ? 'text-[#949494]' : 'opacity-80'}`}>
+          {feature.detail}
+        </p>
+      </article>
+    </div>
   );
 }
 
@@ -149,268 +109,176 @@ export default function Home() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#f4f6f8] py-8 text-slate-900 sm:py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-14 top-16 h-56 w-56 rounded-full bg-cyan-100/70 blur-3xl motion-safe:animate-pulse"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-12 top-36 h-52 w-52 rounded-full bg-indigo-100/65 blur-3xl motion-safe:animate-pulse"
-      />
-
-      <main className="relative mx-auto w-full max-w-7xl space-y-7 px-4 sm:px-6 lg:px-8">
-        <section
-          id="home"
-          className="animate-in fade-in-0 slide-in-from-top-3 relative isolate w-full overflow-hidden rounded-[2rem] border border-slate-200/80 bg-[linear-gradient(180deg,#ffffff,#f8fafc)] p-6 shadow-[0_35px_90px_-48px_rgba(15,23,42,0.45)] duration-700 sm:p-10"
-        >
-          <DottedSurface className="absolute inset-0 z-0 opacity-95 mask-[radial-gradient(ellipse_at_center,transparent_20%,black_34%,black_92%,transparent_100%)]" />
-
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.56)_45%,rgba(255,255,255,0.9)_82%)]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-44 bg-linear-to-b from-white/90 to-transparent"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -left-24 top-16 z-10 h-64 w-64 rounded-full bg-cyan-100/60 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-24 top-10 z-10 h-64 w-64 rounded-full bg-amber-100/55 blur-3xl"
-          />
-
-          <div className="relative z-20 mx-auto flex max-w-4xl flex-col items-center text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-600 uppercase backdrop-blur-xs">
-              <Sparkles className="h-3.5 w-3.5 transition-transform duration-300 hover:rotate-12" />
-              Unsaid
-            </div>
-
-            <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-900 sm:text-5xl xl:text-6xl">
-              Feedback clarity,
-              <br />
-              without social pressure.
+    <div className="min-h-screen w-full bg-[#131313] text-[#ffffff] font-sans">
+      
+      {/* Container max-width typical for editorial (~1280px) */}
+      <main className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        
+        {/* Editorial Hero */}
+        <section className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="flex flex-col items-start">
+            <p className="font-sans-thin-caps text-[15px] sm:text-[17px] mb-3 text-[#949494]">
+              INTRODUCING UNSAID
+            </p>
+            <h1 className="font-display text-[60px] sm:text-[75px] lg:text-[85px] xl:text-[95px] leading-[0.85] mb-6">
+              FEEDBACK CLARITY,<br />
+              WITHOUT PRESSURE.
             </h1>
-
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-              Build a trusted space where people can share what they really
-              think. Unsaid gives you a private inbox, a shareable feedback
-              link, and controls that keep conversations safe and useful.
+            <p className="font-sans text-[20px] sm:text-[24px] font-bold leading-[1.2] max-w-2xl text-white mb-5">
+              Build a trusted space where people can share what they really think.
             </p>
-
-            <div className="w-full [&>div]:mt-8 [&>div]:justify-center">
-              <HomeHeroActions />
-            </div>
-
-            <div className="mt-8 grid w-full max-w-3xl gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
-                  <LockKeyhole className="h-4 w-4" />
-                </div>
-                <p className="mt-2 text-sm font-bold text-slate-900">Private by default</p>
-                <p className="text-xs text-slate-600">Anonymous responses with secure inbox ownership.</p>
-              </div>
-
-              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
-                  <BadgeCheck className="h-4 w-4" />
-                </div>
-                <p className="mt-2 text-sm font-bold text-slate-900">OTP verified</p>
-                <p className="text-xs text-slate-600">Protection against inbox spoofing and misuse.</p>
-              </div>
-
-              <div className="rounded-xl border border-slate-200/90 bg-white/90 px-4 py-3 text-left shadow-sm backdrop-blur-xs">
-                <div className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-1.5 text-slate-700">
-                  <Link2 className="h-4 w-4" />
-                </div>
-                <p className="mt-2 text-sm font-bold text-slate-900">One link sharing</p>
-                <p className="text-xs text-slate-600">Collect feedback from communities in minutes.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="features" className="animate-in fade-in-0 slide-in-from-bottom-3 relative overflow-hidden duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-slate-100/80 blur-3xl"
-          />
-
-          <SectionHeader
-            badge="Our Vision"
-            title="Make honest feedback simple, safe, and useful"
-            description="Unsaid is built to remove fear and friction from feedback. We help people express real thoughts anonymously while giving recipients control and clarity through a clean dashboard."
-          />
-
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition-all duration-300 hover:bg-white hover:shadow-sm sm:text-sm">
-            <BadgeCheck className="h-4 w-4" />
-            Trusted flow: OTP verification, shareable links, private dashboard.
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {features.map((feature) => (
-              <FeatureCard key={feature.title} feature={feature} />
-            ))}
-          </div>
-        </section>
-
-        <MessageTimeCarousel />
-
-        <section id="how-it-works" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
-          <SectionHeader
-            badge="How It Works"
-            title="From sign-up to meaningful insights"
-            description="Start in minutes: create your account, share your profile URL, and begin receiving honest anonymous responses."
-          />
-
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {steps.map((step) => (
-              <StepCard key={step.id} step={step} />
-            ))}
-          </div>
-        </section>
-
-        <section id="trust-center" className="animate-in fade-in-0 slide-in-from-bottom-4 duration-700 w-full rounded-[2rem] border border-slate-200/80 bg-white/90 p-6 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] backdrop-blur-xs sm:p-8">
-          <SectionHeader
-            badge="Trust Center"
-            title="Policies and answers in one place"
-            description="Read how data is handled, what platform rules apply, and common trust questions about anonymous feedback."
-          />
-
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <Link
-              href="/privacy-policy"
-              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
-            >
-              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-                <LockKeyhole className="h-4 w-4" />
-              </div>
-              <h3 className="mt-3 text-base font-extrabold text-slate-900">Privacy Policy</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Learn what data we collect, what we do not collect, and data retention and deletion rules.
-              </p>
-            </Link>
-
-            <Link
-              href="/terms-of-service"
-              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
-            >
-              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-                <BadgeCheck className="h-4 w-4" />
-              </div>
-              <h3 className="mt-3 text-base font-extrabold text-slate-900">Terms of Service</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Review acceptable use, account responsibilities, and enforcement policies for safe platform usage.
-              </p>
-            </Link>
-
-            <Link
-              href="/faq"
-              className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md"
-            >
-              <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 text-slate-700">
-                <MessageSquareText className="h-4 w-4" />
-              </div>
-              <h3 className="mt-3 text-base font-extrabold text-slate-900">FAQ</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Find quick answers about anonymity, abusive messages, moderation flow, and account controls.
-              </p>
-            </Link>
-          </div>
-        </section>
-      </main>
-
-      <footer className="relative mt-10 w-full border-t border-slate-300 bg-slate-950 text-slate-200">
-        <div className="grid gap-10 px-6 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-5 lg:px-12">
-          <div className="space-y-4 sm:col-span-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-300 uppercase">
-              <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
-              Unsaid
-            </div>
-            <p className="max-w-xl text-sm leading-relaxed text-slate-300">
-              Collect honest anonymous feedback in a secure and structured way.
-              Unsaid helps individuals and teams turn candid input into clear
-              action.
+            <p className="text-[#949494] text-[15px] max-w-xl mb-8 leading-[1.5]">
+              Unsaid gives you a private inbox, a shareable feedback link, and controls that keep conversations safe and useful.
             </p>
-            <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-300">
-              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
-                OTP Verification
-              </span>
-              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
-                Private Dashboard
-              </span>
-              <span className="rounded-full border border-slate-700 bg-slate-900 px-3 py-1">
-                AI Suggestions
-              </span>
+            
+            <HomeHeroActions />
+          </div>
+          <div className="relative w-full hidden lg:flex items-center justify-center min-h-[500px]">
+             {/* Decorative Background Elements */}
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#3cffd0]/10 blur-[100px] rounded-full pointer-events-none" />
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 w-[250px] h-[250px] bg-[#5200ff]/15 blur-[100px] rounded-full pointer-events-none" />
+
+             {/* Floating Cards Container */}
+             <div className="relative w-full max-w-[450px] h-[450px] flex items-center justify-center">
+                
+                {/* Card 1 (Back Right) */}
+                <div className="absolute top-8 right-0 w-[280px] p-6 rounded-[20px] border border-[#313131] bg-[#131313] shadow-2xl transform rotate-[12deg] translate-x-8 opacity-80 hover:rotate-[15deg] hover:opacity-100 transition-all duration-500 cursor-default">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-2 h-2 rounded-full bg-[#5200ff]" />
+                    <div className="font-mono-caps text-[10px] text-[#949494]">ANONYMOUS</div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-2 w-3/4 bg-[#313131] rounded-full" />
+                    <div className="h-2 w-full bg-[#313131] rounded-full" />
+                    <div className="h-2 w-5/6 bg-[#313131] rounded-full" />
+                  </div>
+                </div>
+
+                {/* Card 2 (Middle Left) */}
+                <div className="absolute top-24 -left-4 w-[320px] p-6 rounded-[20px] border border-[#313131] bg-[#131313] shadow-2xl transform -rotate-[6deg] -translate-x-4 hover:-rotate-[8deg] transition-all duration-500 z-10 cursor-default">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-2 h-2 rounded-full bg-[#fef08a]" />
+                    <div className="font-mono-caps text-[10px] text-[#949494]">ANONYMOUS</div>
+                  </div>
+                  <p className="font-sans text-[15px] text-white leading-relaxed">
+                    "I've been meaning to say this for a while, but your recent work on the new product design has been incredibly inspiring."
+                  </p>
+                </div>
+
+                {/* Card 3 (Front Focus) */}
+                <div className="absolute bottom-12 right-4 w-[360px] p-8 rounded-[20px] border border-[#3cffd0] bg-[#131313] shadow-[0_0_40px_rgba(60,255,208,0.15)] transform rotate-[2deg] hover:-translate-y-2 hover:shadow-[0_0_60px_rgba(60,255,208,0.25)] hover:-rotate-[1deg] transition-all duration-500 z-20 cursor-default">
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#3cffd0] animate-pulse" />
+                      <div className="font-mono-caps text-[11px] text-[#3cffd0]">NEW MESSAGE</div>
+                    </div>
+                    <div className="font-mono-caps text-[10px] text-[#949494]">JUST NOW</div>
+                  </div>
+                  <p className="font-sans text-[18px] text-white font-bold leading-[1.5]">
+                    "This platform is exactly what our team needed. It removes all the friction from sharing honest thoughts."
+                  </p>
+                </div>
+
+             </div>
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+          
+          {/* Main StoryStream Timeline (Left Column, 8 cols) */}
+          <div className="lg:col-span-8 flex flex-col gap-10">
+            <h2 className="font-sans-thin-caps text-[20px] border-b border-[#313131] pb-4 mb-2">
+              THE STORYSTREAM
+            </h2>
+            
+            <div className="flex flex-col gap-10">
+              {features.map((feature, i) => (
+                <StreamCard 
+                  key={i} 
+                  feature={feature} 
+                  timestamp={`10:${(i + 1) * 12} AM`} 
+                />
+              ))}
+            </div>
+            
+            {/* End of rail cap */}
+            <div className="relative flex items-start gap-4 sm:gap-8">
+              <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+                <div className="absolute top-0 h-[40px] left-1/2 w-px bg-white" />
+                <div className="relative z-10 bg-[#131313] py-2 mt-8 font-mono-caps text-[11px] text-[#949494]">
+                  END FEED
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
-              Product
-            </h3>
-            <nav className="flex flex-col gap-2 text-sm">
-              <Link
-                href="#features"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Features
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                How it works
-              </Link>
-              <Link
-                href="/dashboard"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Dashboard
-              </Link>
-            </nav>
-          </div>
+          {/* Sidebar / Features (Right Column, 4 cols) */}
+          <div className="lg:col-span-4 flex flex-col gap-8">
+            <h2 className="font-sans-thin-caps text-[20px] border-b border-[#313131] pb-4 mb-2">
+              TRUST CENTER
+            </h2>
+            
+            <Link href="/privacy-policy" className="group p-6 rounded-[24px] border border-[#ffffff] bg-[#131313] transition-colors hover:border-[#3cffd0]">
+              <div className="font-mono-caps text-[11px] text-[#3cffd0] mb-2">01 / POLICY</div>
+              <h3 className="font-display text-[32px] leading-[0.9] text-white group-hover:text-[#3860be] transition-colors">PRIVACY</h3>
+              <p className="mt-3 text-[#949494] text-[13px]">Learn what data we collect and our retention rules.</p>
+            </Link>
 
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
-              Account
-            </h3>
-            <HomeFooterAccountLinks />
-          </div>
+            <Link href="/terms-of-service" className="group p-6 rounded-[24px] border border-[#ffffff] bg-[#131313] transition-colors hover:border-[#3cffd0]">
+              <div className="font-mono-caps text-[11px] text-[#3cffd0] mb-2">02 / LEGAL</div>
+              <h3 className="font-display text-[32px] leading-[0.9] text-white group-hover:text-[#3860be] transition-colors">TERMS OF SERVICE</h3>
+              <p className="mt-3 text-[#949494] text-[13px]">Review acceptable use and enforcement policies.</p>
+            </Link>
 
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.14em] text-slate-400 uppercase">
-              Legal
-            </h3>
-            <nav className="flex flex-col gap-2 text-sm">
-              <Link
-                href="/privacy-policy"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms-of-service"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                Terms of Service
-              </Link>
-              <Link
-                href="/faq"
-                className="text-slate-200 transition-colors duration-200 hover:text-white"
-              >
-                FAQ
-              </Link>
-            </nav>
+            <Link href="/faq" className="group p-6 rounded-[24px] bg-[#fef08a] transition-colors hover:opacity-90">
+              <div className="font-mono-caps text-[11px] text-black mb-2">03 / HELP</div>
+              <h3 className="font-display text-[32px] leading-[0.9] text-black group-hover:text-[#3860be] transition-colors">FAQ</h3>
+              <p className="mt-3 text-black opacity-80 text-[13px]">Find quick answers about anonymity and moderation.</p>
+            </Link>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-slate-800 px-6 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:text-sm lg:px-12">
-          <p>&copy; {currentYear} Unsaid. All rights reserved.</p>
-          <p>Privacy-first anonymous feedback for creators, students, and teams.</p>
+        {/* Carousel Section Full Width */}
+        <div className="mt-32 border-t border-[#313131] pt-16">
+          <MessageTimeCarousel />
+        </div>
+      </main>
+
+      {/* Editorial Footer */}
+      <footer className="border-t border-[#ffffff] bg-[#131313] mt-20 pt-16 pb-12">
+        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-4">
+            <div className="lg:col-span-2">
+              <Link href="/" className="inline-block mb-6 group transition-transform hover:scale-[1.02]">
+                <Logo />
+              </Link>
+              <p className="max-w-md text-[#949494] text-[16px] leading-[1.6]">
+                Privacy-first anonymous feedback. Collect candid input in a secure and structured way to turn opinions into action.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-mono-caps text-[11px] text-[#949494] mb-4">PRODUCT</h3>
+              <nav className="flex flex-col gap-4">
+                <Link href="#features" className="font-sans-thin-caps text-[16px] text-white verge-link">FEATURES</Link>
+                <Link href="#how-it-works" className="font-sans-thin-caps text-[16px] text-white verge-link">WORKFLOW</Link>
+                <Link href="/dashboard" className="font-sans-thin-caps text-[16px] text-white verge-link">DASHBOARD</Link>
+              </nav>
+            </div>
+
+            <div>
+              <h3 className="font-mono-caps text-[11px] text-[#949494] mb-4">ACCOUNT & LEGAL</h3>
+              <div className="flex flex-col gap-4">
+                <HomeFooterAccountLinks />
+                <Link href="/privacy-policy" className="font-sans-thin-caps text-[16px] text-white verge-link">PRIVACY</Link>
+                <Link href="/terms-of-service" className="font-sans-thin-caps text-[16px] text-white verge-link">TERMS</Link>
+              </div>
+            </div>
+          </div>
+          <div className="mt-16 pt-8 border-t border-[#313131] flex justify-between font-mono-caps text-[11px] text-[#949494]">
+            <p>&copy; {currentYear} UNSAID.</p>
+            <p>DESIGNED FOR CLARITY</p>
+          </div>
         </div>
       </footer>
     </div>
