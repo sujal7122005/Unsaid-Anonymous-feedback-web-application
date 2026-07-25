@@ -1,12 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
 import MessageCard from '@/src/components/MessageCard'
 import { authClient } from '@/src/lib/auth-client'
 import {
   ArrowRight,
+  Bell,
+  BellOff,
   Copy,
   Inbox,
   Link2,
@@ -15,6 +15,7 @@ import {
   RefreshCcw,
   ShieldCheck,
   Sparkles,
+  Star,
   Trash2,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -25,6 +26,8 @@ type MessageCardData = {
   _id?: string
   content: string
   createdAt: string | Date
+  sentiment?: string
+  isStarred?: boolean
 }
 
 type CustomLinkData = {
@@ -34,7 +37,21 @@ type CustomLinkData = {
   createdAt: string | Date
 }
 
+type SentimentSummary = {
+  positive: number
+  constructive: number
+  negative: number
+  neutral: number
+}
+
 const MAX_CUSTOM_LINKS = 2
+
+const SENTIMENT_COLORS: Record<string, string> = {
+  positive: '#3cffd0',
+  constructive: '#fef08a',
+  negative: '#5200ff',
+  neutral: '#949494',
+}
 
 function DashboardPage() {
   const [messages, setMessages] = useState<MessageCardData[]>([])
@@ -44,8 +61,14 @@ function DashboardPage() {
   const [publicFeedToken, setPublicFeedToken] = useState<string | null>(null)
 
   const [acceptMessages, setAcceptMessages] = useState(false)
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [sentimentSummary, setSentimentSummary] = useState<SentimentSummary>({ positive: 0, constructive: 0, negative: 0, neutral: 0 })
+  const [sentimentFilter, setSentimentFilter] = useState<string | null>(null)
+  const [starredFilter, setStarredFilter] = useState(false)
+
   const [isLoading, setIsLoading] = useState(false)
   const [isSwitchLoading, setIsSwitchLoading] = useState(false)
+  const [isEmailSwitchLoading, setIsEmailSwitchLoading] = useState(false)
   const [isCustomLinksLoading, setIsCustomLinksLoading] = useState(false)
   const [isCreateLinkLoading, setIsCreateLinkLoading] = useState(false)
   const [deletingLinkId, setDeletingLinkId] = useState<string | null>(null)
@@ -66,6 +89,7 @@ function DashboardPage() {
       fetchStatusAcceptMessages()
       fetchCustomLinks()
       fetchPublicFeedToken()
+      fetchEmailNotifications()
     }
   }, [session, isPending])
 
@@ -98,6 +122,22 @@ function DashboardPage() {
       toast.error('Failed to fetch settings', { duration: 2000 })
     } finally {
       setIsSwitchLoading(false)
+    }
+  }
+
+  const fetchEmailNotifications = async () => {
+    try {
+      const response = await fetch('/api/Email-Notifications')
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to fetch email settings')
+      }
+
+      setEmailNotifications(Boolean(data.emailNotifications))
+    } catch {
+      // Default to true on failure
+      setEmailNotifications(true)
     }
   }
 
@@ -182,6 +222,14 @@ function DashboardPage() {
           query.set('customLinkId', inboxTarget)
         }
 
+        if (starredFilter) {
+          query.set('starred', 'true')
+        }
+
+        if (sentimentFilter) {
+          query.set('sentiment', sentimentFilter)
+        }
+
         const response = await fetch(`/api/Get-Messages?${query.toString()}`)
         const data = await response.json()
 
@@ -196,6 +244,10 @@ function DashboardPage() {
 
         setMessages(Array.isArray(data.messages) ? data.messages : [])
 
+        if (data.sentimentSummary) {
+          setSentimentSummary(data.sentimentSummary)
+        }
+
         if (refresh) {
           toast.success('Messages refreshed!', { duration: 2000 })
         }
@@ -205,7 +257,7 @@ function DashboardPage() {
         setIsLoading(false)
       }
     },
-    [activeInbox],
+    [activeInbox, starredFilter, sentimentFilter],
   )
 
   useEffect(() => {
@@ -229,6 +281,13 @@ function DashboardPage() {
   const customLinksRemaining = Math.max(0, MAX_CUSTOM_LINKS - customLinks.length)
   const inboxTitle =
     activeInbox === 'general' ? 'General Inbox' : activeCustomLink?.productName || 'Custom Inbox'
+
+  // Sentiment summary calculations
+  const totalSentimentMessages = sentimentSummary.positive + sentimentSummary.constructive + sentimentSummary.negative + sentimentSummary.neutral
+  const sentimentPercentage = (type: keyof SentimentSummary) => {
+    if (totalSentimentMessages === 0) return 0
+    return Math.round((sentimentSummary[type] / totalSentimentMessages) * 100)
+  }
 
   const handleCreateCustomLink = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -349,9 +408,43 @@ function DashboardPage() {
     }
   }
 
+  const handleEmailNotificationChange = async (checked: boolean) => {
+    setIsEmailSwitchLoading(true)
+    try {
+      const response = await fetch('/api/Email-Notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ emailNotifications: checked }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update email settings')
+      }
+
+      setEmailNotifications(Boolean(data.emailNotifications))
+      toast.success(data.message || 'Email settings updated!', { duration: 2000 })
+    } catch {
+      toast.error('Failed to update email settings', { duration: 2000 })
+    } finally {
+      setIsEmailSwitchLoading(false)
+    }
+  }
+
   const handleDeleteMessage = (messageId?: string) => {
     if (!messageId) return
     setMessages((prev) => prev.filter((message) => message._id !== messageId))
+  }
+
+  const handleStarToggle = (messageId: string, newState: boolean) => {
+    setMessages((prev) =>
+      prev.map((message) =>
+        message._id === messageId ? { ...message, isStarred: newState } : message
+      )
+    )
   }
 
   return (
@@ -395,7 +488,8 @@ function DashboardPage() {
           </div>
         </section>
 
-        <section className="grid gap-8 xl:grid-cols-[1.25fr_0.75fr]">
+        {/* Settings Row: Profile URL + Message Mode + Email Alerts */}
+        <section className="grid gap-8 xl:grid-cols-3">
           <article className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -443,8 +537,36 @@ function DashboardPage() {
               />
             </div>
           </article>
+
+          <article className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+            <p className="font-mono-caps text-[11px] text-[#949494]">NOTIFICATIONS</p>
+            <h2 className="mt-1 font-display text-[40px] uppercase text-white leading-[0.9]">EMAIL ALERTS</h2>
+
+            <div className="mt-6 flex items-center justify-between rounded-[2px] border border-[#313131] bg-[#131313] p-4">
+              <div className="flex items-center gap-3">
+                {emailNotifications ? (
+                  <Bell className="h-5 w-5 text-[#3cffd0]" />
+                ) : (
+                  <BellOff className="h-5 w-5 text-[#949494]" />
+                )}
+                <div>
+                  <p className="font-mono-caps text-[12px] text-white">NEW MESSAGE EMAILS</p>
+                  <p className="font-sans text-[12px] text-[#949494] mt-1">
+                    {emailNotifications ? 'Get notified when a message arrives.' : 'Email alerts are paused.'}
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={emailNotifications}
+                onCheckedChange={handleEmailNotificationChange}
+                disabled={isEmailSwitchLoading}
+                className="data-[state=checked]:bg-[#3cffd0]"
+              />
+            </div>
+          </article>
         </section>
 
+        {/* Public Feed Section */}
         <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -493,6 +615,7 @@ function DashboardPage() {
           </p>
         </section>
 
+        {/* Custom Links Section */}
         <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -597,6 +720,7 @@ function DashboardPage() {
           )}
         </section>
 
+        {/* Messages Section */}
         <section className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -615,12 +739,61 @@ function DashboardPage() {
             </button>
           </div>
 
+          {/* Sentiment Summary Bar */}
+          {totalSentimentMessages > 0 && (
+            <div className="mt-6 rounded-[2px] border border-[#313131] bg-[#131313] p-4">
+              <p className="font-mono-caps text-[10px] text-[#949494] mb-3">SENTIMENT OVERVIEW</p>
+              
+              {/* Progress bar */}
+              <div className="flex h-2 w-full overflow-hidden rounded-full bg-[#313131]">
+                {sentimentSummary.positive > 0 && (
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ width: `${sentimentPercentage('positive')}%`, backgroundColor: '#3cffd0' }}
+                  />
+                )}
+                {sentimentSummary.constructive > 0 && (
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ width: `${sentimentPercentage('constructive')}%`, backgroundColor: '#fef08a' }}
+                  />
+                )}
+                {sentimentSummary.negative > 0 && (
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ width: `${sentimentPercentage('negative')}%`, backgroundColor: '#5200ff' }}
+                  />
+                )}
+                {sentimentSummary.neutral > 0 && (
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ width: `${sentimentPercentage('neutral')}%`, backgroundColor: '#949494' }}
+                  />
+                )}
+              </div>
+
+              {/* Legend */}
+              <div className="mt-3 flex flex-wrap gap-4">
+                {(['positive', 'constructive', 'negative', 'neutral'] as const).map((type) => (
+                  <div key={type} className="flex items-center gap-1.5">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: SENTIMENT_COLORS[type] }} />
+                    <span className="font-mono-caps text-[10px] text-[#949494]">
+                      {type.toUpperCase()} {sentimentPercentage(type)}% ({sentimentSummary[type]})
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Inbox + Sentiment + Starred Filter Pills */}
           <div className="mt-6 flex flex-wrap gap-2">
+            {/* Inbox filters */}
             <button
               type="button"
-              onClick={() => setActiveInbox('general')}
+              onClick={() => { setActiveInbox('general'); setStarredFilter(false); setSentimentFilter(null) }}
               className={`inline-flex items-center gap-1 rounded-[24px] border px-4 py-1.5 font-mono-caps text-[11px] transition-colors ${
-                activeInbox === 'general'
+                activeInbox === 'general' && !starredFilter
                   ? 'border-[#3cffd0] bg-[#3cffd0] text-black'
                   : 'border-[#ffffff] bg-transparent text-white hover:bg-[#ffffff] hover:text-black'
               }`}
@@ -632,15 +805,53 @@ function DashboardPage() {
               <button
                 key={link.id}
                 type="button"
-                onClick={() => setActiveInbox(link.id)}
+                onClick={() => { setActiveInbox(link.id); setStarredFilter(false); setSentimentFilter(null) }}
                 className={`inline-flex items-center gap-1 rounded-[24px] border px-4 py-1.5 font-mono-caps text-[11px] transition-colors ${
-                  activeInbox === link.id
+                  activeInbox === link.id && !starredFilter
                     ? 'border-[#3cffd0] bg-[#3cffd0] text-black'
                     : 'border-[#ffffff] bg-transparent text-white hover:bg-[#ffffff] hover:text-black'
                 }`}
               >
                 <Link2 className="h-3.5 w-3.5" />
                 {link.productName.toUpperCase()}
+              </button>
+            ))}
+
+            {/* Divider */}
+            <div className="w-px h-8 bg-[#313131] mx-1 self-center" />
+
+            {/* Starred filter */}
+            <button
+              type="button"
+              onClick={() => { setStarredFilter(!starredFilter); setSentimentFilter(null) }}
+              className={`inline-flex items-center gap-1 rounded-[24px] border px-4 py-1.5 font-mono-caps text-[11px] transition-colors ${
+                starredFilter
+                  ? 'border-[#fef08a] bg-[#fef08a] text-black'
+                  : 'border-[#313131] bg-transparent text-[#949494] hover:border-[#fef08a] hover:text-[#fef08a]'
+              }`}
+            >
+              <Star className={`h-3.5 w-3.5 ${starredFilter ? 'fill-current' : ''}`} />
+              STARRED
+            </button>
+
+            {/* Sentiment filters */}
+            {(['positive', 'constructive', 'negative', 'neutral'] as const).map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => {
+                  setSentimentFilter(sentimentFilter === type ? null : type)
+                  setStarredFilter(false)
+                }}
+                className={`inline-flex items-center gap-1 rounded-[24px] border px-3 py-1.5 font-mono-caps text-[10px] transition-colors ${
+                  sentimentFilter === type
+                    ? `bg-transparent text-white`
+                    : 'border-[#313131] bg-transparent text-[#949494] hover:text-white hover:border-[#949494]'
+                }`}
+                style={sentimentFilter === type ? { borderColor: SENTIMENT_COLORS[type], color: SENTIMENT_COLORS[type] } : undefined}
+              >
+                <div className="h-2 w-2 rounded-full" style={{ backgroundColor: SENTIMENT_COLORS[type] }} />
+                {type.toUpperCase()}
               </button>
             ))}
           </div>
@@ -656,12 +867,17 @@ function DashboardPage() {
                   key={message._id ?? `${message.createdAt}-${index}`}
                   message={message}
                   onMessageDelete={handleDeleteMessage}
+                  onStarToggle={handleStarToggle}
                 />
               ))}
             </div>
           ) : (
             <div className="rounded-[2px] border border-dashed border-[#313131] bg-[#131313] p-8 font-mono-caps text-[11px] text-[#949494] text-center">
-              NO MESSAGES IN THIS INBOX YET. SHARE YOUR LINK TO START RECEIVING ANONYMOUS FEEDBACK.
+              {starredFilter
+                ? 'NO STARRED MESSAGES. STAR YOUR IMPORTANT MESSAGES TO FIND THEM HERE.'
+                : sentimentFilter
+                  ? `NO ${sentimentFilter.toUpperCase()} MESSAGES IN THIS INBOX.`
+                  : 'NO MESSAGES IN THIS INBOX YET. SHARE YOUR LINK TO START RECEIVING ANONYMOUS FEEDBACK.'}
             </div>
           )}
         </section>

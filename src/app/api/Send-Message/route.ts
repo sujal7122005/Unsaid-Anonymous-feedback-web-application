@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import UserModel, { type CustomLink } from "@/src/models/user";
 import { signupSchema } from "@/src/velidationSchemas/signupSchemaVelidation";
 import { messageSchema } from "@/src/velidationSchemas/messageSchema";
+import { analyzeSentiment } from "@/src/lib/analyzeSentiment";
+import { sendNewMessageNotification } from "@/src/helpers/SendNewMessageNotification";
 import mongoose from "mongoose";
 import { z } from "zod";
 
@@ -14,6 +16,19 @@ const sendMessageBodySchema = z.object({
 
 function escapeRegex(value: string) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getAppUrl(): string {
+    if (process.env.NEXT_PUBLIC_BETTER_AUTH_URL) {
+        return process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
+    }
+    if (process.env.BETTER_AUTH_URL) {
+        return process.env.BETTER_AUTH_URL;
+    }
+    if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}`;
+    }
+    return "http://localhost:3000";
 }
 
 export async function POST(request: Request){
@@ -65,6 +80,7 @@ export async function POST(request: Request){
 
         let inboxType: "general" | "custom" = "general";
         let customLinkId: mongoose.Types.ObjectId | null = null;
+        let inboxLabel = "GENERAL";
 
         if (customLinkSlug) {
             const selectedCustomLink = user.customLinks?.find(
@@ -83,6 +99,7 @@ export async function POST(request: Request){
 
             inboxType = "custom";
             customLinkId = selectedCustomLink._id;
+            inboxLabel = selectedCustomLink.productName.toUpperCase();
         }
 
         const newMessage = {
@@ -90,22 +107,79 @@ export async function POST(request: Request){
             createdAt: new Date(),
             inboxType,
             customLinkId,
+            sentiment: "neutral" as const,
+            isStarred: false,
         };
 
-        await UserModel.findOneAndUpdate(
+        const updatedUser = await UserModel.findOneAndUpdate(
             { _id: user._id },
             { $push: { messages: newMessage } },
-            { new: false }
+            { new: true }
         );
 
-        return NextResponse.json(
+        // Get the ID of the newly pushed message
+        const savedMessage = updatedUser?.messages?.[updatedUser.messages.length - 1];
+        const savedMessageId = savedMessage?._id;
+
+        // Return response immediately — background tasks run async
+        const response = NextResponse.json(
             {
                 success: true,
                 message: "Message sent successfully",
                 newMessage
             },
             {status: 200}
-        )
+        );
+
+        // Fire background tasks (non-blocking)
+        // 1. Sentiment analysis — updates the message in DB
+        // 2. Email notification — sends email to recipient
+        const backgroundTasks: Promise<unknown>[] = [];
+
+        // Sentiment analysis task
+        if (savedMessageId) {
+            backgroundTasks.push(
+                analyzeSentiment(content).then(async (sentiment) => {
+                    if (sentiment !== "neutral") {
+                        await UserModel.updateOne(
+                            {
+                                _id: user._id,
+                                "messages._id": savedMessageId,
+                            },
+                            {
+                                $set: { "messages.$.sentiment": sentiment },
+                            }
+                        );
+                    }
+                }).catch((error) => {
+                    console.log("Background sentiment analysis failed:", error);
+                })
+            );
+        }
+
+        // Email notification task
+        if (user.emailNotifications !== false && user.email) {
+            backgroundTasks.push(
+                sendNewMessageNotification({
+                    recipientEmail: user.email,
+                    recipientUsername: user.username,
+                    messageContent: content,
+                    inboxLabel,
+                    appUrl: getAppUrl(),
+                }).catch((error) => {
+                    console.log("Background email notification failed:", error);
+                })
+            );
+        }
+
+        // Don't await — let them run in background
+        if (backgroundTasks.length > 0) {
+            Promise.allSettled(backgroundTasks).catch(() => {
+                // Silently catch any unexpected errors
+            });
+        }
+
+        return response;
         
     } catch (error) {
         console.log("Error in Send-Message API", error);
@@ -122,4 +196,3 @@ export async function POST(request: Request){
         );
     }
 }
-    

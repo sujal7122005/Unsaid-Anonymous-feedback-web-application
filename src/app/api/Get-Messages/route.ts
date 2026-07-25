@@ -1,14 +1,18 @@
 import connectDB from "@/src/lib/DBConnection";
 import { auth } from "@/src/lib/auth";
 import { headers } from "next/headers";
-import UserModel, { type CustomLink, type Message } from "@/src/models/user";
+import UserModel, { type CustomLink, type Message, type SentimentType } from "@/src/models/user";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { z } from "zod";
 
+const VALID_SENTIMENTS: SentimentType[] = ["positive", "constructive", "negative", "neutral"];
+
 const getMessagesQuerySchema = z.object({
     inbox: z.enum(["general", "custom"]).default("general"),
     customLinkId: z.string().optional(),
+    starred: z.enum(["true", "false"]).optional(),
+    sentiment: z.enum(["positive", "constructive", "negative", "neutral"]).optional(),
 });
 
 
@@ -20,6 +24,8 @@ export async function GET(request: Request){
         const parsedQuery = getMessagesQuerySchema.safeParse({
             inbox: searchParams.get("inbox") ?? undefined,
             customLinkId: searchParams.get("customLinkId") ?? undefined,
+            starred: searchParams.get("starred") ?? undefined,
+            sentiment: searchParams.get("sentiment") ?? undefined,
         });
 
         if (!parsedQuery.success) {
@@ -32,7 +38,7 @@ export async function GET(request: Request){
             );
         }
 
-        const { inbox, customLinkId } = parsedQuery.data;
+        const { inbox, customLinkId, starred, sentiment } = parsedQuery.data;
 
         if (inbox === "custom" && !customLinkId) {
             return NextResponse.json(
@@ -110,19 +116,44 @@ export async function GET(request: Request){
             };
         }
 
-        const filteredMessages = user.messages
-            .filter((message: Message) => {
-                if (inbox === "general") {
-                    // Legacy messages without inboxType are treated as general.
-                    return message.inboxType !== "custom";
-                }
+        // Base filter: inbox type
+        let baseMessages = user.messages.filter((message: Message) => {
+            if (inbox === "general") {
+                // Legacy messages without inboxType are treated as general.
+                return message.inboxType !== "custom";
+            }
 
-                return String(message.customLinkId ?? "") === customLinkId;
-            })
-            .sort(
-                (a: Message, b: Message) =>
-                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
+            return String(message.customLinkId ?? "") === customLinkId;
+        });
+
+        // Compute sentiment summary BEFORE applying sentiment/starred filters
+        const sentimentSummary = { positive: 0, constructive: 0, negative: 0, neutral: 0 };
+        for (const msg of baseMessages) {
+            const s = (msg.sentiment as SentimentType) || "neutral";
+            if (VALID_SENTIMENTS.includes(s)) {
+                sentimentSummary[s]++;
+            } else {
+                sentimentSummary.neutral++;
+            }
+        }
+
+        // Apply starred filter
+        if (starred === "true") {
+            baseMessages = baseMessages.filter((message: Message) => message.isStarred === true);
+        }
+
+        // Apply sentiment filter
+        if (sentiment) {
+            baseMessages = baseMessages.filter((message: Message) => {
+                const msgSentiment = message.sentiment || "neutral";
+                return msgSentiment === sentiment;
+            });
+        }
+
+        const sortedMessages = baseMessages.sort(
+            (a: Message, b: Message) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
         return NextResponse.json(
             {
@@ -130,7 +161,8 @@ export async function GET(request: Request){
                 message: "Messages fetched successfully",
                 inbox,
                 customLink: selectedCustomLink,
-                messages: filteredMessages,
+                messages: sortedMessages,
+                sentimentSummary,
             },
             {status: 200}
         )

@@ -44,6 +44,7 @@ export const auth = betterAuth({
                         { $set: { 
                             messages: [],              // ✅ proper empty array
                             isAcceptingMessages: true,
+                            emailNotifications: true,
                             customLinks: [],
                             publicFeedToken: generatePublicFeedToken(),
                             publicFeedTokenCreatedAt: new Date(),

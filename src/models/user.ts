@@ -1,10 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export type SentimentType = "positive" | "constructive" | "negative" | "neutral";
+
 export interface Message extends Document {
     content : string;
     createdAt: Date;
     inboxType: "general" | "custom";
     customLinkId?: mongoose.Types.ObjectId | null;
+    sentiment: SentimentType;
+    isStarred: boolean;
 }
 
 export interface CustomLink {
@@ -22,6 +26,7 @@ export interface User extends Document {
     verificationcodeExpiry: Date;
     isVerified: boolean;
     isAcceptingMessages: boolean;
+    emailNotifications: boolean;
     publicFeedToken?: string | null;
     publicFeedTokenCreatedAt?: Date | null;
     createdAt: Date;
@@ -35,6 +40,8 @@ const MessageSchema: Schema<Message> = new Schema({
     createdAt: { type: Date, default: Date.now() },
     inboxType: { type: String, enum: ["general", "custom"], default: "general" },
     customLinkId: { type: Schema.Types.ObjectId, default: null },
+    sentiment: { type: String, enum: ["positive", "constructive", "negative", "neutral"], default: "neutral" },
+    isStarred: { type: Boolean, default: false },
 });
 
 const CustomLinkSchema: Schema<CustomLink> = new Schema({
@@ -52,6 +59,7 @@ const UserSchema: Schema<User> = new Schema({
     verificationcodeExpiry: { type: Date },
     isVerified: { type: Boolean, default: false },
     isAcceptingMessages: { type: Boolean, default: true },
+    emailNotifications: { type: Boolean, default: true },
     publicFeedToken: { type: String, default: null },
     publicFeedTokenCreatedAt: { type: Date, default: null },
     messages: [MessageSchema],
