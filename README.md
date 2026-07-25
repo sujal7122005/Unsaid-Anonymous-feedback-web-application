@@ -4,7 +4,7 @@ Unsaid is a full-stack anonymous feedback platform where users share a public li
 
 ## Live App
 
-https://unsaid-liart.vercel.app/
+https://www.unsaidfacts.me/
 
 ## Project Overview
 
@@ -52,6 +52,13 @@ Unsaid is built around two product experiences:
 1. General inbox is always available.
 2. Up to 2 active custom links per user (`MAX_CUSTOM_LINKS = 2`).
 3. Deleting a custom link also removes messages tied to that custom inbox.
+
+### Public Embeddable Feed
+
+1. Users can generate a secure token to fetch their 10 most recent general messages via JSON.
+2. Endpoint: `GET /u/[username]/messages?token=...`
+3. Includes IP and token-based rate limiting for secure external consumption.
+4. Token can be regenerated directly from the dashboard.
 
 ### AI Suggestion Engine
 
@@ -162,6 +169,8 @@ Signup/Login/Verify -> Nodemailer SMTP + React Email
 | `/api/Get-Messages`        | GET               | Yes                 | Fetch messages by inbox (`general` or `custom`)     |
 | `/api/Delete-Message`      | DELETE            | Yes                 | Delete a message                                    |
 | `/api/Custom-Links`        | GET, POST, DELETE | Yes                 | Manage custom product links                         |
+| `/api/Public-Feed`         | GET, POST         | Yes                 | Fetch or regenerate public feed token               |
+| `/u/[username]/messages`   | GET               | Token               | Fetch latest messages for public embed              |
 
 ## Key API Contract Notes
 
@@ -208,6 +217,25 @@ Behavior:
 3. `DELETE`: removes selected custom link and related custom inbox messages.
 4. Maximum active custom links per user: 2.
 
+### GET /u/[username]/messages
+
+Query params:
+
+- `token=<string>` (required)
+
+Behavior:
+
+1. Validates the provided token against the user's `publicFeedToken`.
+2. Returns the 10 most recent messages from the general inbox.
+3. Enforces IP-based and token-based rate limits to prevent abuse.
+
+### /api/Public-Feed
+
+Behavior:
+
+1. `GET`: retrieves the user's `publicFeedToken`, generating it if one doesn't exist.
+2. `POST`: regenerates the `publicFeedToken`, invalidating the previous token.
+
 ## Data Model (Mongoose)
 
 ### User
@@ -215,9 +243,10 @@ Behavior:
 1. `username`, `email`, `password`
 2. `verificationcode`, `verificationcodeExpiry`, `isVerified`
 3. `isAcceptingMessages`
-4. `messages: Message[]`
-5. `customLinks: CustomLink[]`
-6. `createdAt`, `updatedAt`
+4. `publicFeedToken`, `publicFeedTokenCreatedAt`
+5. `messages: Message[]`
+6. `customLinks: CustomLink[]`
+7. `createdAt`, `updatedAt`
 
 ### Message (embedded)
 
