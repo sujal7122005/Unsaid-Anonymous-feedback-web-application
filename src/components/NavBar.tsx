@@ -8,6 +8,7 @@ import { LogOut } from 'lucide-react'
 import Logo from './Logo'
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
+  { href: '/#how-it-works', label: 'How It Works' },
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },

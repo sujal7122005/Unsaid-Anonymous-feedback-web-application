@@ -1,8 +1,14 @@
 import {
+  ArrowRight,
   BadgeCheck,
+  LayoutDashboard,
   Link2,
   LockKeyhole,
   MessageSquareText,
+  Send,
+  Share2,
+  ShieldCheck,
+  Sparkles,
   ToggleLeft,
   WandSparkles,
 } from "lucide-react";
@@ -237,6 +243,133 @@ export default function Home() {
             </Link>
           </div>
         </div>
+
+        {/* ── HOW IT WORKS ── */}
+        <section id="how-it-works" className="mt-32 border-t border-[#313131] pt-16 scroll-mt-24">
+          <div className="mb-12">
+            <div className="inline-flex items-center gap-2 rounded-[2px] border border-[#3cffd0] bg-transparent px-3 py-1 font-mono-caps text-[10px] text-[#3cffd0] mb-6">
+              <Sparkles className="h-3.5 w-3.5" />
+              HOW IT WORKS
+            </div>
+            <h2 className="font-display text-[50px] sm:text-[60px] lg:text-[75px] leading-[0.85] text-white">
+              THREE STEPS TO
+              <br />
+              HONEST FEEDBACK.
+            </h2>
+            <p className="mt-4 max-w-2xl text-[#949494] text-[15px] leading-[1.6]">
+              No complicated setup. Create your account, share one link, and start receiving anonymous messages in minutes.
+            </p>
+          </div>
+
+          {/* Steps Timeline */}
+          <div className="flex flex-col gap-10">
+
+            {/* Step 01 — Sign Up */}
+            <div className="relative flex items-start gap-4 sm:gap-8">
+              <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+                <div className="absolute top-0 bottom-[-40px] left-1/2 w-px bg-[#3cffd0]" />
+                <div className="relative z-10 bg-[#131313] py-2 font-display text-[28px] sm:text-[34px] text-[#3cffd0]">
+                  01
+                </div>
+              </div>
+              <article className="relative w-full rounded-[20px] p-6 sm:p-8 bg-[#3cffd0] text-[#000000] transition-colors duration-150">
+                <div className="flex items-center gap-3">
+                  <span className="font-sans-thin-caps text-[14px] text-black/70">GETTING STARTED</span>
+                  <ShieldCheck className="h-4 w-4" />
+                </div>
+                <h3 className="font-display text-[34px] leading-[0.9] mt-4 mb-2 text-black">SIGN UP & VERIFY</h3>
+                <p className="text-[16px] font-bold text-black mb-2">
+                  Create your account with email or Google sign-in.
+                </p>
+                <p className="text-[13px] opacity-80">
+                  Verify your email with a quick OTP code. Once verified, your unique feedback link is instantly generated — something like <span className="font-mono-caps text-[11px]">unsaidfacts.me/u/yourname</span>.
+                </p>
+              </article>
+            </div>
+
+            {/* Step 02 — Share Link */}
+            <div className="relative flex items-start gap-4 sm:gap-8">
+              <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+                <div className="absolute top-0 bottom-[-40px] left-1/2 w-px bg-[#5200ff]" />
+                <div className="relative z-10 bg-[#131313] py-2 font-display text-[28px] sm:text-[34px] text-[#5200ff]">
+                  02
+                </div>
+              </div>
+              <article className="relative w-full rounded-[20px] p-6 sm:p-8 bg-[#5200ff] text-white transition-colors duration-150">
+                <div className="flex items-center gap-3">
+                  <span className="font-sans-thin-caps text-[14px] text-white/70">COLLECT FEEDBACK</span>
+                  <Share2 className="h-4 w-4" />
+                </div>
+                <h3 className="font-display text-[34px] leading-[0.9] mt-4 mb-2 text-white">SHARE YOUR LINK</h3>
+                <p className="text-[16px] font-bold text-white mb-2">
+                  Post your link on social media, portfolios, resumes, or team channels.
+                </p>
+                <p className="text-[13px] opacity-80">
+                  Anyone who opens the link can send you an anonymous message — no account needed on their end. You can also create up to 2 product-specific links for targeted feedback.
+                </p>
+              </article>
+            </div>
+
+            {/* Step 03 — Read & Manage */}
+            <div className="relative flex items-start gap-4 sm:gap-8">
+              <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+                <div className="absolute top-0 bottom-[-40px] left-1/2 w-px bg-white" />
+                <div className="relative z-10 bg-[#131313] py-2 font-display text-[28px] sm:text-[34px] text-white">
+                  03
+                </div>
+              </div>
+              <article className="relative w-full rounded-[20px] p-6 sm:p-8 bg-[#131313] border border-[#3cffd0] text-white transition-colors duration-150">
+                <div className="flex items-center gap-3">
+                  <span className="font-sans-thin-caps text-[14px] text-[#949494]">YOUR DASHBOARD</span>
+                  <LayoutDashboard className="h-4 w-4 text-[#3cffd0]" />
+                </div>
+                <h3 className="font-display text-[34px] leading-[0.9] mt-4 mb-2 text-white">READ & MANAGE</h3>
+                <p className="text-[16px] font-bold text-white mb-2">
+                  All messages arrive in your private dashboard — organized, filterable, and fully under your control.
+                </p>
+                <p className="text-[13px] text-[#949494]">
+                  Toggle message acceptance on or off. Filter by sentiment. Star important messages. Delete what you don&apos;t need. Create product-specific inboxes. Get email alerts for new messages.
+                </p>
+              </article>
+            </div>
+
+            {/* End of rail cap */}
+            <div className="relative flex items-start gap-4 sm:gap-8">
+              <div className="relative flex flex-col items-center shrink-0 w-[40px] sm:w-[60px]">
+                <div className="absolute top-0 h-[40px] left-1/2 w-px bg-white" />
+                <div className="relative z-10 bg-[#131313] py-2 mt-8 font-mono-caps text-[11px] text-[#3cffd0]">
+                  DONE
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sender Callout */}
+          <div className="mt-16 grid gap-6 lg:grid-cols-[1fr_auto] items-center">
+            <article className="rounded-[20px] border border-[#313131] bg-[#131313] p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Send className="h-5 w-5 text-[#3cffd0]" />
+                <span className="font-mono-caps text-[11px] text-[#3cffd0]">FOR SENDERS</span>
+              </div>
+              <h3 className="font-display text-[30px] sm:text-[40px] leading-[0.9] text-white mb-3">
+                WANT TO SEND FEEDBACK?
+              </h3>
+              <p className="text-[16px] text-white font-bold mb-2">No account needed. Just open any Unsaid link, type your message, and hit send.</p>
+              <p className="text-[13px] text-[#949494]">
+                Stuck on what to say? The AI suggestion engine generates thoughtful prompts — one appreciation, one constructive thought, and one reflective question — so your feedback is always meaningful.
+              </p>
+            </article>
+            <div className="flex flex-col gap-3">
+              <Link href="/signup" className="jelly-mint-pill h-12 px-8 flex items-center justify-center gap-2 text-center">
+                GET YOUR LINK
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/faq" className="dark-slate-pill h-12 px-8 flex items-center justify-center gap-2 text-center">
+                READ THE FAQ
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Carousel Section Full Width */}
         <div className="mt-32 border-t border-[#313131] pt-16">
